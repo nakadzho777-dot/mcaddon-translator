@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - STRIPE_WEBHOOK_SECRET=your_secret
+      - OPENAI_API_KEY=your_key
+    restart: always
