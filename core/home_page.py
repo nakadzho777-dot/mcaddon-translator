@@ -25,28 +25,20 @@ mcaddon / mcpack / lang / json の翻訳作業をサポートします。
 </p>
 
 <section>
-<h2>できること</h2>
-<ul>
-<li>mcaddon / mcpack の翻訳補助</li>
-<li>langファイルの日本語化</li>
-<li>json内テキストの抽出と翻訳</li>
-<li>翻訳記事による使い方解説</li>
-</ul>
-</section>
-
-<section>
 <h2>まず試す</h2>
-<p><a href="/pricing">料金プランを見る</a></p>
-<p><a href="/blog/">使い方ブログを見る</a></p>
-<p><a href="https://github.com/nakadzho777-dot/mcaddon-translator">GitHubを見る</a></p>
+<ul>
+<li><a href="/click?source=home_main&target=/pricing">料金プランを見る</a></li>
+<li><a href="/click?source=home_main&target=/blog/">使い方ブログを見る</a></li>
+<li><a href="/click?source=home_main&target=https://github.com/nakadzho777-dot/mcaddon-translator">GitHubを見る</a></li>
+</ul>
 </section>
 
 <section>
 <h2>おすすめ記事</h2>
 <ul>
-<li><a href="/blog/mcaddon-翻訳-やり方.html">mcaddon 翻訳 やり方</a></li>
-<li><a href="/blog/mcaddon-nihongo-ka-houhou.html">mcaddon 日本語化 方法</a></li>
-<li><a href="/blog/minecraft-addon-nihongo.html">minecraft addon 日本語にする方法</a></li>
+<li><a href="/click?source=home_articles&target=/blog/mcaddon-翻訳-やり方.html">mcaddon 翻訳 やり方</a></li>
+<li><a href="/click?source=home_articles&target=/blog/mcaddon-nihongo-ka-houhou.html">mcaddon 日本語化 方法</a></li>
+<li><a href="/click?source=home_articles&target=/blog/minecraft-addon-nihongo.html">minecraft addon 日本語にする方法</a></li>
 </ul>
 </section>
 
