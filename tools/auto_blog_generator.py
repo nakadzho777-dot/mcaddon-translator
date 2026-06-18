@@ -1,14 +1,20 @@
 import os
-from openai import OpenAI
+import re
 from datetime import datetime
+from openai import OpenAI
+
+from core.logger import log_event
+from core.internal_linker import run_internal_linking
 
 # =========================
 # 設定
 # =========================
-BASE_URL = "https://github.com/nakadzho777-dot/mcaddon-translator"  # ←変更する
+BASE_URL = "https://github.com/nakadzho777-dot/mcaddon-translator"
 OUTPUT_DIR = "landing/blog"
+SITEMAP_PATH = "landing/blog/sitemap.xml"
 
-# APIキー
+MODEL = "gpt-4o-mini"
+
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("❌ OPENAI_API_KEY が設定されていません")
@@ -16,9 +22,9 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 # =========================
-# キーワード（増やすほど強い）
+# キーワード
 # =========================
-keywords = [
+KEYWORDS = [
     "mcaddon 翻訳 やり方",
     "mcaddon 日本語化 方法",
     "minecraft addon 日本語にする方法",
@@ -32,82 +38,176 @@ keywords = [
 ]
 
 # =========================
-# スラッグ生成
+# ユーティリティ
 # =========================
-def slugify(text):
-    return text.lower().replace(" ", "-")
+def slugify(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"\s+", "-", text)
+    return text.strip("-")
+
+
+def ensure_dir(path: str):
+    os.makedirs(path, exist_ok=True)
+
 
 # =========================
-# 記事生成
+# SEO分析
 # =========================
-def generate_content(keyword):
+def analyze_keyword(keyword: str) -> str:
     prompt = f"""
-以下のキーワードでSEO記事を書いてください。
+キーワード:
+{keyword}
 
-キーワード: {keyword}
-
-条件:
-・2000文字以上
-・見出し付き（h2, h3）
-・初心者向け
-・具体的な手順あり
-・自然な日本語
+検索意図・ユーザー層・攻略方針を簡潔に分析してください。
 """
 
     res = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return res.choices[0].message.content
+
+
+# =========================
+# 構成生成
+# =========================
+def generate_structure(keyword: str, analysis: str) -> str:
+    prompt = f"""
+キーワード:
+{keyword}
+
+分析:
+{analysis}
+
+h2 / h3構造で記事構成を作成してください（5〜8章）。
+"""
+
+    res = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return res.choices[0].message.content
+
+
+# =========================
+# 本文生成
+# =========================
+def generate_body(keyword: str, structure: str) -> str:
+    prompt = f"""
+以下の構成でSEO記事を作成してください。
+
+キーワード: {keyword}
+
+構成:
+{structure}
+
+条件:
+- 2000〜3000文字
+- 初心者向け
+- 実用的手順重視
+"""
+
+    res = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return res.choices[0].message.content
+
+
+# =========================
+# SEO生成
+# =========================
+def generate_seo(keyword: str) -> dict:
+    prompt = f"""
+SEO情報をJSONで出力:
+
+キーワード: {keyword}
+
+形式:
+{{
+  "title": "...",
+  "description": "...",
+  "slug": "..."
+}}
+"""
+
+    res = client.chat.completions.create(
+        model=MODEL,
         messages=[{"role": "user", "content": prompt}],
     )
 
-    return res.choices[0].message.content
+    import json
+    try:
+        return json.loads(res.choices[0].message.content)
+    except:
+        return {
+            "title": f"【2026年最新版】{keyword}",
+            "description": keyword,
+            "slug": slugify(keyword),
+        }
+
 
 # =========================
 # HTML生成
 # =========================
-def generate_article(keyword):
-    print(f"生成中: {keyword}")
-
-    content = generate_content(keyword)
-
-    slug = slugify(keyword)
-    filename = f"{slug}.html"
-    filepath = os.path.join(OUTPUT_DIR, filename)
-
-    title = f"【2026年最新版】{keyword}｜初心者でも簡単にできる"
-
-    html = f"""<!DOCTYPE html>
+def build_html(seo: dict, body: str) -> str:
+    return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>{title}</title>
-<meta name="description" content="{keyword}のやり方を解説">
+<title>{seo['title']}</title>
+<meta name="description" content="{seo['description']}">
 </head>
 <body>
 
-<h1>{title}</h1>
+<h1>{seo['title']}</h1>
 
-{content}
+{body}
 
+<hr>
 <p><a href="/">👉 翻訳ツールはこちら</a></p>
 
 </body>
 </html>
 """
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# =========================
+# 記事生成
+# =========================
+def generate_article(keyword: str) -> str:
+    print(f"🚀 生成中: {keyword}")
+    log_event(f"START {keyword}")
+
+    analysis = analyze_keyword(keyword)
+    structure = generate_structure(keyword, analysis)
+    body = generate_body(keyword, structure)
+    seo = generate_seo(keyword)
+
+    filename = f"{seo['slug']}.html"
+    filepath = os.path.join(OUTPUT_DIR, filename)
+
+    ensure_dir(OUTPUT_DIR)
+
+    html = build_html(seo, body)
 
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(html)
 
+    log_event(f"CREATED {filename}")
+
     return filename
+
 
 # =========================
 # sitemap更新
 # =========================
-def update_sitemap(filenames):
+def update_sitemap(files):
     urls = ""
-    for name in filenames:
-        urls += f"<url><loc>{BASE_URL}/blog/{name}</loc></url>\n"
+
+    for f in files:
+        urls += f"<url><loc>{BASE_URL}/blog/{f}</loc></url>\n"
 
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -115,22 +215,30 @@ def update_sitemap(filenames):
 </urlset>
 """
 
-    with open("sitemap.xml", "w", encoding="utf-8") as f:
+    ensure_dir(os.path.dirname(SITEMAP_PATH))
+
+    with open(SITEMAP_PATH, "w", encoding="utf-8") as f:
         f.write(xml)
+
 
 # =========================
 # 実行
 # =========================
 if __name__ == "__main__":
-    generated_files = []
+    generated = []
 
-    for kw in keywords:
+    for kw in KEYWORDS:
         try:
             file = generate_article(kw)
-            generated_files.append(file)
+            generated.append(file)
         except Exception as e:
-            print(f"エラー（{kw}）: {e}")
+            log_event(f"ERROR {kw} {e}")
+            print(f"❌ エラー: {kw}")
 
-    update_sitemap(generated_files)
+    update_sitemap(generated)
 
-    print("✅ 記事生成＆sitemap更新 完了🔥")
+    # 🔥 内部リンク自動生成（統合）
+    run_internal_linking()
+
+    log_event("COMPLETE ALL")
+    print("✅ 完全自動SEO生成完了")

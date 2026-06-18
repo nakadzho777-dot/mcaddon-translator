@@ -1,25 +1,49 @@
-import logging
 import os
+import json
+from datetime import datetime
+
+LOG_PATH = "logs/app.log"
+JSON_LOG_PATH = "logs/logs.json"
 
 
-class Logger:
+def ensure_dir():
+    os.makedirs("logs", exist_ok=True)
 
-    def __init__(self, name="mcaddon"):
-        os.makedirs("logs", exist_ok=True)
 
-        logging.basicConfig(
-            filename="logs/app.log",
-            level=logging.INFO,
-            format="%(asctime)s [%(levelname)s] %(message)s"
-        )
+def log_event(event: str, level: str = "INFO"):
+    ensure_dir()
 
-        self.logger = logging.getLogger(name)
+    timestamp = datetime.now().isoformat()
 
-    def info(self, msg):
-        self.logger.info(msg)
+    log_entry = {
+        "time": timestamp,
+        "level": level,
+        "event": event
+    }
 
-    def error(self, msg):
-        self.logger.error(msg)
+    # ① テキストログ（人間用）
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(f"{timestamp} | {level} | {event}\n")
 
-    def warning(self, msg):
-        self.logger.warning(msg)
+    # ② JSONログ（分析用）
+    logs = []
+
+    if os.path.exists(JSON_LOG_PATH):
+        try:
+            with open(JSON_LOG_PATH, "r", encoding="utf-8") as f:
+                logs = json.load(f)
+        except:
+            logs = []
+
+    logs.append(log_entry)
+
+    with open(JSON_LOG_PATH, "w", encoding="utf-8") as f:
+        json.dump(logs, f, ensure_ascii=False, indent=2)
+
+
+def log_error(event: str):
+    log_event(event, level="ERROR")
+
+
+def log_success(event: str):
+    log_event(event, level="SUCCESS")

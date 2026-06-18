@@ -1,46 +1,61 @@
+import json
+import os
 
-from core.team_db import get_team
+USER_DB = "data/users.json"
 
 
 # =========================
-# 権限取得
+# ユーザー取得
 # =========================
-def get_role(team_id: str, username: str):
+def load_users():
+    if not os.path.exists(USER_DB):
+        return {}
 
-    team = get_team(team_id)
-
-    if not team:
-        return None
-
-    return team["members"].get(username)
+    with open(USER_DB, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 # =========================
 # 権限チェック
 # =========================
-def require_role(team_id: str, username: str, allowed_roles: list):
+def has_permission(user_id: str, action: str):
+    users = load_users()
 
-    role = get_role(team_id, username)
+    user = users.get(user_id)
 
-    if role is None:
+    if not user:
         return False
 
-    return role in allowed_roles
+    role = user.get("plan", "free")
+
+    permissions = {
+        "free": ["view"],
+        "pro": ["view", "generate", "rewrite", "seo"],
+        "business": ["view", "generate", "rewrite", "seo", "admin"]
+    }
+
+    allowed = permissions.get(role, [])
+
+    return action in allowed
 
 
 # =========================
-# 操作別チェック
+# 管理者判定
 # =========================
-def can_edit(team_id: str, username: str):
+def is_admin(user_id: str):
+    users = load_users()
 
-    return require_role(team_id, username, ["OWNER", "ADMIN", "MEMBER"])
+    user = users.get(user_id)
+
+    if not user:
+        return False
+
+    return user.get("plan") == "business"
 
 
-def can_manage_team(team_id: str, username: str):
-
-    return require_role(team_id, username, ["OWNER", "ADMIN"])
-
-
-def can_delete_project(team_id: str, username: str):
-
-    return require_role(team_id, username, ["OWNER"])
+# =========================
+# アクセス拒否チェック
+# =========================
+def enforce_permission(user_id: str, action: str):
+    if not has_permission(user_id, action):
+        raise PermissionError(f"❌ Permission denied: {action} for {user_id}")
