@@ -27,6 +27,24 @@
 
   <link rel="icon" href="/favicon.ico">
 
+  <!-- ✅ 構造化データ（SEO強化） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Minecraft Addon Translator",
+    "url": "https://mcaddon-translator-production.up.railway.app/",
+    "description": "Minecraftのアドオン（mcaddon）を自動翻訳する無料ツール。JSON対応。",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
   <style>
     body {
       margin: 0;
@@ -45,10 +63,16 @@
       margin-bottom: 10px;
     }
 
+    h2 {
+      color: #60a5fa;
+      margin-bottom: 20px;
+    }
+
     p {
       color: #cbd5f5;
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto 30px;
+      line-height: 1.6;
     }
 
     .btn {
@@ -81,12 +105,13 @@
   <div class="container">
 
     <h1>Minecraft Addon Translator</h1>
-
     <h2>マイクラアドオン翻訳ツール</h2>
 
     <p>
-      Minecraft（マイクラ）のアドオン（mcaddon）を自動で日本語化できる無料ツールです。  
-      JSONファイルにも対応し、初心者でも簡単に翻訳できます。
+      Minecraft（マイクラ）のアドオン（mcaddon）を自動で日本語化できる無料ツールです。<br>
+      JSONファイルにも対応し、初心者でも簡単に翻訳できます。<br><br>
+
+      「mcaddon 翻訳」「minecraft addon translate」を探している方に最適です。
     </p>
 
     <a href="/docs" class="btn">APIを使う</a>
