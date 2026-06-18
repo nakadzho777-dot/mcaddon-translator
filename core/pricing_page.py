@@ -22,10 +22,9 @@ def generate_pricing_page():
 <section>
 <h2>Free版</h2>
 <ul>
-<li>mcaddon / mcpack の基本翻訳</li>
+<li>基本翻訳</li>
 <li>langファイル翻訳</li>
-<li>JSONテキスト抽出</li>
-<li>ローカル利用</li>
+<li>JSON翻訳補助</li>
 </ul>
 <p><strong>価格: 無料</strong></p>
 <p><a href="/click?source=pricing_free&target=https://github.com/nakadzho777-dot/mcaddon-translator">無料版を入手する</a></p>
@@ -41,13 +40,10 @@ def generate_pricing_page():
 <li>差分表示</li>
 <li>ユーザー辞書</li>
 <li>一括変換</li>
-<li>優先アップデート</li>
 </ul>
-<p><strong>価格: 準備中</strong></p>
-<p><a href="/click?source=pricing_pro&target=/billing/health">Pro版の準備状況を確認</a></p>
+<p><strong>価格: Stripeで決済</strong></p>
+<p><a href="/click?source=pricing_pro&target=/billing/checkout">Pro版を購入する</a></p>
 </section>
-
-<hr>
 
 <p><a href="/click?source=pricing_footer&target=/blog/">使い方ブログを見る</a></p>
 <p><a href="/click?source=pricing_footer&target=/">トップへ戻る</a></p>

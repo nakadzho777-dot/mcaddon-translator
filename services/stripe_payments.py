@@ -1,85 +1,110 @@
 import os
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+import requests
+from fastapi import APIRouter, Query
+from fastapi.responses import HTMLResponse, RedirectResponse
 
-# Stripeは本番で使う想定（未設定でも動くようにしてある）
-try:
-    import stripe
-    stripe.api_key = os.getenv("STRIPE_SECRET_KEY", "")
-except Exception:
-    stripe = None
-
+from core.license_store import create_license, verify_license
 
 router = APIRouter(prefix="/billing", tags=["billing"])
 
-
-# =========================
-# リクエストモデル
-# =========================
-class CreateCheckoutRequest(BaseModel):
-    price_id: str
-    success_url: str
-    cancel_url: str
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_PRICE_ID = os.getenv("STRIPE_PRICE_ID", "")
+SITE_URL = os.getenv(
+    "SITE_URL",
+    "https://mcaddon-translator-production.up.railway.app"
+)
 
 
-# =========================
-# ヘルスチェック
-# =========================
 @router.get("/health")
 def billing_health():
     return {
         "status": "ok",
-        "stripe_loaded": stripe is not None
+        "stripe_key": bool(STRIPE_SECRET_KEY),
+        "price_id": bool(STRIPE_PRICE_ID),
     }
 
 
-# =========================
-# Checkoutセッション作成
-# =========================
-@router.post("/checkout")
-def create_checkout_session(req: CreateCheckoutRequest):
-    if stripe is None or not stripe.api_key:
-        raise HTTPException(
-            status_code=500,
-            detail="Stripe API key is not configured"
-        )
+@router.get("/checkout")
+def checkout():
+    if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+        return HTMLResponse("""
+<h1>Stripe設定が未完了です</h1>
+<p>Railwayに STRIPE_SECRET_KEY と STRIPE_PRICE_ID を設定してください。</p>
+""", status_code=500)
 
-    try:
-        session = stripe.checkout.Session.create(
-            mode="subscription",
-            line_items=[
-                {
-                    "price": req.price_id,
-                    "quantity": 1,
-                }
-            ],
-            success_url=req.success_url,
-            cancel_url=req.cancel_url,
-        )
+    res = requests.post(
+        "https://api.stripe.com/v1/checkout/sessions",
+        auth=(STRIPE_SECRET_KEY, ""),
+        data={
+            "mode": "payment",
+            "line_items[0][price]": STRIPE_PRICE_ID,
+            "line_items[0][quantity]": "1",
+            "success_url": f"{SITE_URL}/billing/success?session_id={{CHECKOUT_SESSION_ID}}",
+            "cancel_url": f"{SITE_URL}/pricing",
+            "allow_promotion_codes": "true",
+        },
+        timeout=30,
+    )
 
-        return {
-            "checkout_url": session.url
-        }
+    if res.status_code >= 400:
+        return HTMLResponse(f"""
+<h1>Checkout作成エラー</h1>
+<pre>{res.text}</pre>
+""", status_code=500)
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# =========================
-# サブスク状態ダミー確認
-# =========================
-@router.get("/status")
-def subscription_status():
-    return {
-        "plan": "free",
-        "status": "inactive"
-    }
+    data = res.json()
+    return RedirectResponse(data["url"])
 
 
-# =========================
-# Webhook（将来用）
-# =========================
-@router.post("/webhook")
-def stripe_webhook():
-    # 今は最小構成（後で拡張）
-    return {"received": True}
+@router.get("/success")
+def success(session_id: str = Query(default="")):
+    if not session_id:
+        return HTMLResponse("<h1>session_id がありません</h1>", status_code=400)
+
+    res = requests.get(
+        f"https://api.stripe.com/v1/checkout/sessions/{session_id}",
+        auth=(STRIPE_SECRET_KEY, ""),
+        timeout=30,
+    )
+
+    if res.status_code >= 400:
+        return HTMLResponse(f"<h1>Stripe確認エラー</h1><pre>{res.text}</pre>", status_code=500)
+
+    session = res.json()
+
+    if session.get("payment_status") != "paid":
+        return HTMLResponse("<h1>支払いが完了していません</h1>", status_code=400)
+
+    email = (
+        session.get("customer_details", {}).get("email")
+        or session.get("customer_email")
+        or "unknown@example.com"
+    )
+
+    license_key = create_license(email=email, source="stripe")
+
+    return HTMLResponse(f"""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Proライセンス発行完了</title>
+</head>
+<body>
+<h1>Proライセンス発行完了</h1>
+
+<p>支払いが確認されました。</p>
+
+<h2>あなたのライセンスキー</h2>
+<pre style="font-size:20px; padding:12px; border:1px solid #ccc;">{license_key}</pre>
+
+<p>このキーをMCAddon Translator Pro版に入力してください。</p>
+<p><a href="/">トップへ戻る</a></p>
+</body>
+</html>
+""")
+
+
+@router.get("/verify")
+def verify(key: str = Query(default="")):
+    return verify_license(key)
