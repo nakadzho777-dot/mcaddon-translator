@@ -1,7 +1,9 @@
 import os
-from fastapi import FastAPI
-from fastapi.responses import FileResponse, HTMLResponse, Response, PlainTextResponse
+from fastapi import FastAPI, Query
+from fastapi.responses import FileResponse, HTMLResponse, Response, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+
+from core.click_tracker import record_click
 
 app = FastAPI(title="MCAddon Translator")
 
@@ -37,6 +39,15 @@ def home():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/click")
+def click(
+    source: str = Query(default="unknown"),
+    target: str = Query(default="/")
+):
+    record_click(source, target)
+    return RedirectResponse(url=target)
 
 
 @app.get("/pricing")
