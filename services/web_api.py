@@ -41,6 +41,15 @@ def health():
 
 @app.get("/pricing")
 def pricing():
+    return pricing_page()
+
+
+@app.get("/pricing/")
+def pricing_slash():
+    return pricing_page()
+
+
+def pricing_page():
     path = os.path.join(LANDING_DIR, "pricing.html")
 
     if os.path.exists(path):
@@ -51,11 +60,12 @@ def pricing():
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>料金プラン</title>
+<title>料金プラン | MCAddon Translator</title>
 </head>
 <body>
-<h1>料金プラン</h1>
+<h1>MCAddon Translator 料金プラン</h1>
 <p>料金ページはまだ生成されていません。</p>
+<p><a href="/">トップへ戻る</a></p>
 </body>
 </html>
 """)
