@@ -27,7 +27,7 @@ def home():
 <body>
 <h1>MCAddon Translator</h1>
 <p>Minecraftアドオン翻訳ツール</p>
-<p><a href="/blog/">Blog</a></p>
+<p><a href="/blog/">ブログを見る</a></p>
 </body>
 </html>
 """)
@@ -36,6 +36,28 @@ def home():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/blog/")
+def blog_index():
+    index_path = os.path.join(BLOG_DIR, "index.html")
+
+    if os.path.exists(index_path):
+        return FileResponse(index_path, media_type="text/html; charset=utf-8")
+
+    return HTMLResponse("""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ブログ一覧</title>
+</head>
+<body>
+<h1>ブログ一覧</h1>
+<p>まだ記事一覧が生成されていません。</p>
+</body>
+</html>
+""")
 
 
 @app.get("/sitemap.xml")
@@ -71,4 +93,4 @@ Sitemap: https://mcaddon-translator-production.up.railway.app/sitemap.xml
 
 
 if os.path.exists(BLOG_DIR):
-    app.mount("/blog", StaticFiles(directory=BLOG_DIR, html=True), name="blog")
+    app.mount("/blog", StaticFiles(directory=BLOG_DIR, html=True), name="blog-static")

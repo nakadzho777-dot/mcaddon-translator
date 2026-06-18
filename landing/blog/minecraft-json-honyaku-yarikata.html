@@ -2,120 +2,134 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>MinecraftのJSON翻訳方法を解説</title>
-<meta name="description" content="MinecraftでJSONを翻訳するやり方を詳しく解説します。初心者でもわかりやすく、実践的な手順を紹介します。">
+<title>MinecraftのJSON翻訳のやり方ガイド</title>
+<meta name="description" content="MinecraftでのJSON翻訳のやり方を詳しく解説します。簡単な手順で自分の言語に翻訳し、ゲームを楽しもう！">
 <meta name="robots" content="index,follow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
 <article>
-<h1>MinecraftのJSON翻訳方法を解説</h1>
+<h1>MinecraftのJSON翻訳のやり方ガイド</h1>
 
 <p><small>更新日: 2026-06-18</small></p>
-<p><small>SEOスコア: 85/100</small></p>
+<p><small>SEOスコア: 75/100</small></p>
 
-# Minecraft JSON翻訳のやり方
+# MinecraftのJSON翻訳のやり方：初心者向けガイド
 
-Minecraftは、その自由度の高さから多くのプレイヤーに愛されています。特に、アドオンを使って自分だけの世界を作ることができるのが魅力です。しかし、アドオンを作成する際に避けて通れないのが「JSON（JavaScript Object Notation）」の翻訳です。この記事では、初心者向けにMinecraftのJSON翻訳のやり方を解説します。具体的な手順とよくあるエラーについても触れますので、安心して進めてください。
+Minecraft統合版でのアドオン作成は、ゲームをさらに楽しむための素晴らしい方法です。特に、アイテムやブロックの名前、説明文などを日本語に翻訳することは、より多くのプレイヤーにとって使いやすい環境を提供します。このガイドでは、MinecraftのJSON翻訳の具体的なやり方を初心者向けに解説します。
 
-## JSONとは？
+## JSONとは何か？
 
 ### JSONの基本
 
-JSONは、データを軽量で読みやすい形で表現するためのフォーマットです。特にWebアプリケーションやAPIでよく使用されます。Minecraftでは、アドオンやデータパックの設定にJSONが使用されます。これにより、ゲーム内のアイテムやブロックの属性を定義することができます。
+JSON（JavaScript Object Notation）は、データを簡潔に表現するためのフォーマットです。Minecraftでは、アドオンやカスタムコンテンツの設定にJSONフォーマットを使用します。特に、テキストの翻訳にはJSONが不可欠です。
 
 ### MinecraftにおけるJSONの役割
 
-Minecraftでは、JSONファイルを使って様々な要素を設定します。たとえば、アイテムの名前、説明、レシピなどをJSON形式で記述します。これにより、プレイヤーがゲーム内でどのようにアイテムを扱うかをカスタマイズすることができます。
+Minecraftでは、テキストの翻訳においてJSONが重要な役割を果たします。アイテムやエンティティの名前、説明文を翻訳するためには、JSONファイルを編集する必要があります。このプロセスを理解することが、アドオン作成の第一歩です。
 
-## JSON翻訳の準備
+## JSON翻訳のやり方
 
-### 必要なツール
+### ステップ1：アドオンの準備
 
-MinecraftのJSON翻訳を行うためには、以下のツールが必要です。
+まず、Minecraftのアドオンを作成するための基本的なフォルダ構造を準備します。以下の手順に従ってください。
 
-1. **テキストエディタ**: JSONファイルを編集するためのテキストエディタ（例: Visual Studio Code、Notepad++など）
-2. **Minecraft**: 実際にアドオンを動かすためのMinecraft統合版
-3. **JSONリファレンス**: JSONの書き方を確認できるリファレンスサイト
+1. **Minecraftのアドオンフォルダを開く**
+   - Windowsの場合、`%localappdata%/Packages/Mojang.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/`にアクセスします。
 
-### JSON翻訳の手順
+2. **新しいアドオンフォルダを作成**
+   - 例：`MyAddon`という名前のフォルダを作成します。
 
-以下に、具体的な手順を示します。
+3. **必要なファイルを作成**
+   - `manifest.json`ファイルと、`behavior_packs`および`resource_packs`フォルダを作成します。
 
-#### ステップ1: JSONファイルの作成
+### ステップ2：manifest.jsonの設定
 
-1. **新しいフォルダを作成**: Minecraftのアドオン用のフォルダを作成します。
-2. **JSONファイルを作成**: フォルダ内に新しいテキストファイルを作成し、拡張子を「.json」に変更します。
-3. **基本構造を記述**: JSONファイルには基本的な構造があります。以下はアイテムの例です。
+`manifest.json`はアドオンの基本情報を含むファイルです。以下の内容を参考にしてください。
 
 ```json
 {
-  "format_version": "1.10",
-  "minecraft:item": {
-    "description": {
-      "identifier": "namespace:item_name",
-      "category": "Misc",
-      "is_experimental": false
+    "format_version": "2",
+    "header": {
+        "description": "My Custom Addon",
+        "name": "MyAddon",
+        "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "version": [1, 0, 0],
+        "min_engine_version": [1, 16, 0]
     },
-    "components": {
-      "icon": "textures/items/item_name.png"
-    }
-  }
+    "modules": [
+        {
+            "description": "Behavior Pack",
+            "type": "data",
+            "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "version": [1, 0, 0]
+        },
+        {
+            "description": "Resource Pack",
+            "type": "data",
+            "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "version": [1, 0, 0]
+        }
+    ]
 }
 ```
 
-#### ステップ2: 翻訳の追加
+### ステップ3：翻訳用のJSONファイルを作成
 
-1. **翻訳キーの設定**: `description`セクションに翻訳キーを追加します。以下のように記述します。
+次に、翻訳用のJSONファイルを作成します。`resource_packs`フォルダ内に`texts`フォルダを作成し、その中に`ja.json`という名前のファイルを作成します。
 
-```json
-"description": {
-  "identifier": "namespace:item_name",
-  "category": "Misc",
-  "is_experimental": false,
-  "name": "翻訳キー"
-}
-```
-
-2. **翻訳テキストの記述**: `lang.json`ファイルを作成し、翻訳したいテキストを追加します。
+#### ja.jsonの例
 
 ```json
 {
-  "item.namespace.item_name": "翻訳されたアイテム名"
+    "item.my_custom_item": "カスタムアイテム",
+    "block.my_custom_block": "カスタムブロック"
 }
 ```
 
-#### ステップ3: Minecraftへの読み込み
+このように、`item.`や`block.`の後にカスタム名を追加し、その翻訳を行います。
 
-1. **アドオンの読み込み**: Minecraftを起動し、「設定」→「ストレージ」から作成したアドオンを読み込みます。
-2. **アイテムの確認**: ゲーム内で新しく追加したアイテムを確認し、翻訳が正しく表示されるか確認します。
+### ステップ4：アドオンをMinecraftに適用する
+
+1. **Minecraftを起動**
+   - アドオンが適用されていることを確認します。
+
+2. **設定メニューからアドオンを選択**
+   - 「ワールドの作成」または「編集」メニューでアドオンを選択します。
+
+3. **アドオンを有効にする**
+   - 「行動パック」や「リソースパック」から自分のアドオンを選び、有効にします。
+
+### ステップ5：テストを行う
+
+アドオンを適用したら、ゲーム内でアイテムやブロックが正しく翻訳されているか確認します。これが成功すれば、翻訳は完了です。
 
 ## よくあるエラーと対処法
 
-### エラー1: JSONの構文エラー
+アドオンを作成するときには、いくつかのエラーが発生することがあります。以下は一般的なエラーとその対処法です。
 
-**問題**: JSONファイルに構文エラーがある場合、Minecraftはそのファイルを読み込むことができません。
+### エラー1：UUIDが重複している
 
-**対処法**: テキストエディタのJSONバリデーター機能を使って、構文エラーをチェックします。特にカンマや括弧の閉じ忘れに注意してください。
+**対処法**：`manifest.json`内のUUIDは一意である必要があります。UUIDを生成するツールを使用して、異なるUUIDを作成してください。
 
-### エラー2: 翻訳が表示されない
+### エラー2：翻訳が表示されない
 
-**問題**: 翻訳したテキストがゲーム内で表示されないことがあります。
+**対処法**：`ja.json`ファイルの構文が正しいか確認してください。特に、カンマや波括弧の閉じ忘れに注意が必要です。
 
-**対処法**: `lang.json`ファイルの翻訳キーが正しいか確認します。また、ファイルのパスが正しいかも見直してください。
+### エラー3：アドオンが適用されない
 
-### エラー3: アドオンが読み込まれない
+**対処法**：アドオンのフォルダ構造や`manifest.json`の内容を再確認し、正しい形式になっているか確認してください。
 
-**問題**: アドオンがMinecraftに読み込まれない場合があります。
+## 翻訳ツールの活用
 
-**対処法**: アドオンのフォルダ構成が正しいか確認し、必要なファイルがすべて揃っているかをチェックします。
+MinecraftのJSON翻訳を行う際、手動での作業は煩雑になることがあります。そこで、翻訳ツールを活用することをお勧めします。例えば、Google翻訳やDeepLなどのオンライン翻訳サービスを使用すると、英語から日本語への翻訳がスムーズに行えます。特に、大量のテキストを翻訳する場合には、これらのツールが役立ちます。
 
 ## まとめ
 
-MinecraftのJSON翻訳は、アドオンのカスタマイズにおいて非常に重要な作業です。この記事では、初心者向けに具体的な手順を解説し、よくあるエラーとその対処法についても触れました。これらの手順を踏むことで、あなたのアドオンがより魅力的になることでしょう。
+MinecraftのJSON翻訳は、アドオン作成において非常に重要なステップです。基本的な手順を踏めば、初心者でも簡単に翻訳ができるようになります。エラーの対処法も理解しておけば、スムーズに作業を進めることができるでしょう。
 
-もしさらに便利な翻訳ツールを探しているのであれば、オンラインのJSON翻訳ツールを活用するのも良いでしょう。これらのツールを使うことで、翻訳作業が格段に楽になります。自分だけのMinecraftの世界を楽しんでください！
+ぜひ、今回のガイドを参考にして、あなた自身のアドオンを作成し、Minecraftの世界をより楽しいものにしてください。翻訳ツールを利用して、効率的に作業を進めることもお忘れなく！
 
 <hr>
 
@@ -131,7 +145,6 @@ MCAddon Translatorを使うことでlangファイルやJSON翻訳を自動化で
 </article>
 
 
-
 <section id="related-posts">
 <h2>関連記事</h2>
 <ul>
@@ -139,7 +152,7 @@ MCAddon Translatorを使うことでlangファイルやJSON翻訳を自動化で
 <li><a href="/blog/google281c3da749cf0393.html">google281c3da749cf0393</a></li>
 <li><a href="/blog/how-to-translate-mcadon.html">How to Translate MCADON: A Comprehensive Guide</a></li>
 <li><a href="/blog/mcaddon-honyaku-erra-kai-kyaku.html">mcaddon翻訳エラーの解決法を徹底解説</a></li>
-<li><a href="/blog/mcaddon-honyaku-yarikat.html">MCAddonの翻訳方法と手順</a></li>
+<li><a href="/blog/mcaddon-honyaku-erro-kai-zyutsu.html">MCAddon翻訳エラーの解決法を徹底解説</a></li>
 </ul>
 </section>
 </body>

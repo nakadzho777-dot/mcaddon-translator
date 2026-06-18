@@ -17,6 +17,15 @@ def update_sitemap(files):
 
     urls = ""
 
+    # ブログ一覧ページも登録
+    urls += f"""  <url>
+    <loc>{SITE_URL}/blog/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+"""
+
     for f in files:
         if not f:
             continue
