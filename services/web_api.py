@@ -28,6 +28,7 @@ def home():
 <h1>MCAddon Translator</h1>
 <p>Minecraftアドオン翻訳ツール</p>
 <p><a href="/blog/">ブログを見る</a></p>
+<p><a href="/pricing">料金プランを見る</a></p>
 </body>
 </html>
 """)
@@ -36,6 +37,28 @@ def home():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/pricing")
+def pricing():
+    path = os.path.join(LANDING_DIR, "pricing.html")
+
+    if os.path.exists(path):
+        return FileResponse(path, media_type="text/html; charset=utf-8")
+
+    return HTMLResponse("""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>料金プラン</title>
+</head>
+<body>
+<h1>料金プラン</h1>
+<p>料金ページはまだ生成されていません。</p>
+</body>
+</html>
+""")
 
 
 @app.get("/blog/")

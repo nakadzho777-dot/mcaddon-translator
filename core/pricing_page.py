@@ -1,0 +1,68 @@
+import os
+
+LANDING_DIR = "landing"
+
+
+def generate_pricing_page():
+    os.makedirs(LANDING_DIR, exist_ok=True)
+
+    html = """<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>料金プラン | MCAddon Translator</title>
+<meta name="description" content="MCAddon Translatorの無料版とPro版の違いを紹介します。">
+<meta name="robots" content="index,follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>MCAddon Translator 料金プラン</h1>
+
+<section>
+<h2>Free版</h2>
+<ul>
+<li>mcaddon / mcpack の基本翻訳</li>
+<li>langファイル翻訳</li>
+<li>JSONテキスト抽出</li>
+<li>ローカル利用</li>
+</ul>
+<p><strong>価格: 無料</strong></p>
+<p><a href="/">無料版を使う</a></p>
+</section>
+
+<hr>
+
+<section>
+<h2>Pro版</h2>
+<ul>
+<li>高精度AI翻訳</li>
+<li>翻訳プレビュー</li>
+<li>差分表示</li>
+<li>ユーザー辞書</li>
+<li>一括変換</li>
+<li>優先アップデート</li>
+</ul>
+<p><strong>価格: 未定 / 準備中</strong></p>
+<p><a href="/billing/health">Pro版準備状況を確認</a></p>
+</section>
+
+<hr>
+
+<section>
+<h2>おすすめ</h2>
+<p>
+まずはFree版で翻訳を試し、作業量が増えてきたらPro版を検討するのがおすすめです。
+</p>
+</section>
+
+<p><a href="/blog/">ブログ一覧へ</a></p>
+
+</body>
+</html>
+"""
+
+    with open(os.path.join(LANDING_DIR, "pricing.html"), "w", encoding="utf-8") as f:
+        f.write(html)
+
+    print("✅ pricing page 生成完了")
