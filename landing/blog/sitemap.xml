@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-翻訳-やり方.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/minecraft-addon-nihongo.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -13,31 +19,31 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-翻訳-やり方.html</loc>
-    <lastmod>2026-06-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcpack-日本語化-手順.html</loc>
-    <lastmod>2026-06-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://mcaddon-translator-production.up.railway.app/blog/minecraft-json-honyaku-yarikata.html</loc>
-    <lastmod>2026-06-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/minecraft-addon-honyaku-tool.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-lang-file-edit.html</loc>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcpack-nihongo-ka-tedun.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/minecraft-json-honyaku-yarika.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-翻訳-エラー-解決.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-lang-ファイル-編集.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -49,13 +55,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcpack-honyaku-dekinai-genin.html</loc>
-    <lastmod>2026-06-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-honyaku-erra-kai-kyaku.html</loc>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcpack-翻訳できない-原因.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

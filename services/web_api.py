@@ -1,12 +1,13 @@
 import os
 from fastapi import FastAPI
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI(title="MCAddon Translator API")
+app = FastAPI(title="MCAddon Translator")
 
-BLOG_DIR = "landing/blog"
 LANDING_DIR = "landing"
+BLOG_DIR = "landing/blog"
+SITEMAP_PATH = "landing/sitemap.xml"
 
 
 @app.get("/")
@@ -14,18 +15,22 @@ def home():
     index_path = os.path.join(LANDING_DIR, "index.html")
 
     if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html")
+        return FileResponse(index_path, media_type="text/html; charset=utf-8")
 
     return HTMLResponse("""
-    <html>
-    <head><title>MCAddon Translator</title></head>
-    <body>
-        <h1>MCAddon Translator</h1>
-        <p>Minecraftアドオン翻訳ツール</p>
-        <p><a href="/blog/">Blog</a></p>
-    </body>
-    </html>
-    """)
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>MCAddon Translator</title>
+</head>
+<body>
+<h1>MCAddon Translator</h1>
+<p>Minecraftアドオン翻訳ツール</p>
+<p><a href="/blog/">Blog</a></p>
+</body>
+</html>
+""")
 
 
 @app.get("/health")
@@ -35,15 +40,24 @@ def health():
 
 @app.get("/sitemap.xml")
 def sitemap():
-    path = os.path.join(LANDING_DIR, "sitemap.xml")
+    if os.path.exists(SITEMAP_PATH):
+        with open(SITEMAP_PATH, "r", encoding="utf-8") as f:
+            xml = f.read().strip()
 
-    if not os.path.exists(path):
-        return PlainTextResponse(
-            '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>',
-            media_type="application/xml"
-        )
+        if xml.startswith("<?xml") or xml.startswith("<urlset"):
+            return Response(
+                content=xml,
+                media_type="application/xml; charset=utf-8"
+            )
 
-    return FileResponse(path, media_type="application/xml")
+    fallback_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+</urlset>
+"""
+    return Response(
+        content=fallback_xml,
+        media_type="application/xml; charset=utf-8"
+    )
 
 
 @app.get("/robots.txt")
@@ -53,7 +67,7 @@ Allow: /
 
 Sitemap: https://mcaddon-translator-production.up.railway.app/sitemap.xml
 """
-    return PlainTextResponse(content, media_type="text/plain")
+    return PlainTextResponse(content, media_type="text/plain; charset=utf-8")
 
 
 if os.path.exists(BLOG_DIR):
