@@ -1,0 +1,422 @@
+[
+  {
+    "time": "2026-06-18T17:04:24.307210",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T17:04:26.871067",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:26.897451",
+    "level": "INFO",
+    "event": "START mcaddon 日本語化 方法"
+  },
+  {
+    "time": "2026-06-18T17:04:26.927325",
+    "level": "INFO",
+    "event": "ERROR mcaddon 日本語化 方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:26.949862",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にする方法"
+  },
+  {
+    "time": "2026-06-18T17:04:26.975681",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にする方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:26.997543",
+    "level": "INFO",
+    "event": "START mcpack 日本語化 手順"
+  },
+  {
+    "time": "2026-06-18T17:04:27.021745",
+    "level": "INFO",
+    "event": "ERROR mcpack 日本語化 手順 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:27.044878",
+    "level": "INFO",
+    "event": "START minecraft json 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T17:04:27.077462",
+    "level": "INFO",
+    "event": "ERROR minecraft json 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:27.106704",
+    "level": "INFO",
+    "event": "START minecraft アドオン 翻訳 ツール"
+  },
+  {
+    "time": "2026-06-18T17:04:27.138375",
+    "level": "INFO",
+    "event": "ERROR minecraft アドオン 翻訳 ツール 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:27.169039",
+    "level": "INFO",
+    "event": "START mcaddon lang ファイル 編集"
+  },
+  {
+    "time": "2026-06-18T17:04:27.201305",
+    "level": "INFO",
+    "event": "ERROR mcaddon lang ファイル 編集 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:27.230255",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 エラー 解決"
+  },
+  {
+    "time": "2026-06-18T17:04:27.263638",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 エラー 解決 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:27.292941",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にならない"
+  },
+  {
+    "time": "2026-06-18T17:04:27.325187",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にならない 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:27.358166",
+    "level": "INFO",
+    "event": "START mcpack 翻訳できない 原因"
+  },
+  {
+    "time": "2026-06-18T17:04:27.399429",
+    "level": "INFO",
+    "event": "ERROR mcpack 翻訳できない 原因 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:04:28.078915",
+    "level": "INFO",
+    "event": "COMPLETE ALL"
+  },
+  {
+    "time": "2026-06-18T17:07:12.704061",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T17:07:15.228535",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.260089",
+    "level": "INFO",
+    "event": "START mcaddon 日本語化 方法"
+  },
+  {
+    "time": "2026-06-18T17:07:15.293247",
+    "level": "INFO",
+    "event": "ERROR mcaddon 日本語化 方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.327428",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にする方法"
+  },
+  {
+    "time": "2026-06-18T17:07:15.361614",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にする方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.392654",
+    "level": "INFO",
+    "event": "START mcpack 日本語化 手順"
+  },
+  {
+    "time": "2026-06-18T17:07:15.424954",
+    "level": "INFO",
+    "event": "ERROR mcpack 日本語化 手順 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.458579",
+    "level": "INFO",
+    "event": "START minecraft json 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T17:07:15.492098",
+    "level": "INFO",
+    "event": "ERROR minecraft json 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.523220",
+    "level": "INFO",
+    "event": "START minecraft アドオン 翻訳 ツール"
+  },
+  {
+    "time": "2026-06-18T17:07:15.555853",
+    "level": "INFO",
+    "event": "ERROR minecraft アドオン 翻訳 ツール 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.589893",
+    "level": "INFO",
+    "event": "START mcaddon lang ファイル 編集"
+  },
+  {
+    "time": "2026-06-18T17:07:15.624206",
+    "level": "INFO",
+    "event": "ERROR mcaddon lang ファイル 編集 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.656075",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 エラー 解決"
+  },
+  {
+    "time": "2026-06-18T17:07:15.691124",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 エラー 解決 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.721814",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にならない"
+  },
+  {
+    "time": "2026-06-18T17:07:15.757068",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にならない 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:15.789744",
+    "level": "INFO",
+    "event": "START mcpack 翻訳できない 原因"
+  },
+  {
+    "time": "2026-06-18T17:07:15.822593",
+    "level": "INFO",
+    "event": "ERROR mcpack 翻訳できない 原因 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:07:16.657218",
+    "level": "INFO",
+    "event": "COMPLETE ALL"
+  },
+  {
+    "time": "2026-06-18T17:10:39.898111",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T17:10:42.542208",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.569051",
+    "level": "INFO",
+    "event": "START mcaddon 日本語化 方法"
+  },
+  {
+    "time": "2026-06-18T17:10:42.594423",
+    "level": "INFO",
+    "event": "ERROR mcaddon 日本語化 方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.615489",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にする方法"
+  },
+  {
+    "time": "2026-06-18T17:10:42.637760",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にする方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.659548",
+    "level": "INFO",
+    "event": "START mcpack 日本語化 手順"
+  },
+  {
+    "time": "2026-06-18T17:10:42.681639",
+    "level": "INFO",
+    "event": "ERROR mcpack 日本語化 手順 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.713154",
+    "level": "INFO",
+    "event": "START minecraft json 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T17:10:42.747221",
+    "level": "INFO",
+    "event": "ERROR minecraft json 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.777089",
+    "level": "INFO",
+    "event": "START minecraft アドオン 翻訳 ツール"
+  },
+  {
+    "time": "2026-06-18T17:10:42.809206",
+    "level": "INFO",
+    "event": "ERROR minecraft アドオン 翻訳 ツール 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.843354",
+    "level": "INFO",
+    "event": "START mcaddon lang ファイル 編集"
+  },
+  {
+    "time": "2026-06-18T17:10:42.879057",
+    "level": "INFO",
+    "event": "ERROR mcaddon lang ファイル 編集 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.910976",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 エラー 解決"
+  },
+  {
+    "time": "2026-06-18T17:10:42.943317",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 エラー 解決 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:42.975490",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にならない"
+  },
+  {
+    "time": "2026-06-18T17:10:43.007844",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にならない 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:43.039370",
+    "level": "INFO",
+    "event": "START mcpack 翻訳できない 原因"
+  },
+  {
+    "time": "2026-06-18T17:10:43.073960",
+    "level": "INFO",
+    "event": "ERROR mcpack 翻訳できない 原因 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T17:10:43.893245",
+    "level": "INFO",
+    "event": "COMPLETE ALL"
+  },
+  {
+    "time": "2026-06-18T18:30:28.803610",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T18:30:31.739712",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:31.765398",
+    "level": "INFO",
+    "event": "START mcaddon 日本語化 方法"
+  },
+  {
+    "time": "2026-06-18T18:30:31.788124",
+    "level": "INFO",
+    "event": "ERROR mcaddon 日本語化 方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:31.822736",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にする方法"
+  },
+  {
+    "time": "2026-06-18T18:30:31.862842",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にする方法 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:31.896476",
+    "level": "INFO",
+    "event": "START mcpack 日本語化 手順"
+  },
+  {
+    "time": "2026-06-18T18:30:31.931828",
+    "level": "INFO",
+    "event": "ERROR mcpack 日本語化 手順 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:31.966817",
+    "level": "INFO",
+    "event": "START minecraft json 翻訳 やり方"
+  },
+  {
+    "time": "2026-06-18T18:30:32.002459",
+    "level": "INFO",
+    "event": "ERROR minecraft json 翻訳 やり方 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:32.037870",
+    "level": "INFO",
+    "event": "START minecraft アドオン 翻訳 ツール"
+  },
+  {
+    "time": "2026-06-18T18:30:32.072686",
+    "level": "INFO",
+    "event": "ERROR minecraft アドオン 翻訳 ツール 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:32.106382",
+    "level": "INFO",
+    "event": "START mcaddon lang ファイル 編集"
+  },
+  {
+    "time": "2026-06-18T18:30:32.140793",
+    "level": "INFO",
+    "event": "ERROR mcaddon lang ファイル 編集 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:32.176076",
+    "level": "INFO",
+    "event": "START mcaddon 翻訳 エラー 解決"
+  },
+  {
+    "time": "2026-06-18T18:30:32.208486",
+    "level": "INFO",
+    "event": "ERROR mcaddon 翻訳 エラー 解決 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:32.241527",
+    "level": "INFO",
+    "event": "START minecraft addon 日本語にならない"
+  },
+  {
+    "time": "2026-06-18T18:30:32.272925",
+    "level": "INFO",
+    "event": "ERROR minecraft addon 日本語にならない 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:32.306241",
+    "level": "INFO",
+    "event": "START mcpack 翻訳できない 原因"
+  },
+  {
+    "time": "2026-06-18T18:30:32.340884",
+    "level": "INFO",
+    "event": "ERROR mcpack 翻訳できない 原因 'ascii' codec can't encode characters in position 7-10: ordinal not in range(128)"
+  },
+  {
+    "time": "2026-06-18T18:30:33.040457",
+    "level": "INFO",
+    "event": "COMPLETE ALL"
+  }
+]
