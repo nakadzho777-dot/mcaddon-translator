@@ -13,6 +13,8 @@ BLOG_DIR = "landing/blog"
 SITEMAP_PATH = "landing/sitemap.xml"
 CLICK_LOG = "data/clicks.json"
 
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+
 
 def record_click(source: str, target: str):
     os.makedirs("data", exist_ok=True)
@@ -57,13 +59,9 @@ def home():
     return HTMLResponse("""
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>MCAddon Translator</title>
-</head>
+<head><meta charset="UTF-8"><title>MCAddon Translator</title></head>
 <body>
 <h1>MCAddon Translator</h1>
-<p>Minecraftアドオン翻訳ツール</p>
 <p><a href="/blog/">ブログを見る</a></p>
 <p><a href="/pricing">料金プランを見る</a></p>
 </body>
@@ -77,18 +75,30 @@ def health():
 
 
 @app.get("/click")
-def click(
-    source: str = Query(default="unknown"),
-    target: str = Query(default="/")
-):
+def click(source: str = Query(default="unknown"), target: str = Query(default="/")):
     record_click(source, target)
     return RedirectResponse(url=target)
 
 
 @app.get("/admin/clicks")
-def admin_clicks():
-    clicks = load_clicks()
+def admin_clicks(password: str = Query(default="")):
+    if password != ADMIN_PASSWORD:
+        return HTMLResponse("""
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><title>Admin Login</title></head>
+<body>
+<h1>管理ページ</h1>
+<p>パスワードを入力してください。</p>
+<form method="get" action="/admin/clicks">
+<input type="password" name="password" placeholder="password">
+<button type="submit">ログイン</button>
+</form>
+</body>
+</html>
+""", status_code=401)
 
+    clicks = load_clicks()
     rows = ""
 
     for item in reversed(clicks[-200:]):
@@ -100,87 +110,41 @@ def admin_clicks():
 </tr>
 """
 
-    html = f"""<!DOCTYPE html>
+    return HTMLResponse(f"""
+<!DOCTYPE html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>クリックログ | MCAddon Translator</title>
-</head>
+<head><meta charset="UTF-8"><title>クリックログ</title></head>
 <body>
-
 <h1>クリックログ</h1>
 <p>合計クリック数: {len(clicks)}</p>
-
 <table border="1" cellpadding="6">
-<tr>
-<th>Time</th>
-<th>Source</th>
-<th>Target</th>
-</tr>
+<tr><th>Time</th><th>Source</th><th>Target</th></tr>
 {rows}
 </table>
-
-<p><a href="/">トップへ戻る</a></p>
-
 </body>
 </html>
-"""
-
-    return HTMLResponse(html)
+""")
 
 
 @app.get("/pricing")
 def pricing():
-    return pricing_page()
+    path = os.path.join(LANDING_DIR, "pricing.html")
+    if os.path.exists(path):
+        return FileResponse(path, media_type="text/html; charset=utf-8")
+    return HTMLResponse("<h1>料金ページはまだ生成されていません。</h1>")
 
 
 @app.get("/pricing/")
 def pricing_slash():
-    return pricing_page()
-
-
-def pricing_page():
-    path = os.path.join(LANDING_DIR, "pricing.html")
-
-    if os.path.exists(path):
-        return FileResponse(path, media_type="text/html; charset=utf-8")
-
-    return HTMLResponse("""
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>料金プラン | MCAddon Translator</title>
-</head>
-<body>
-<h1>MCAddon Translator 料金プラン</h1>
-<p>料金ページはまだ生成されていません。</p>
-<p><a href="/">トップへ戻る</a></p>
-</body>
-</html>
-""")
+    return pricing()
 
 
 @app.get("/blog/")
 def blog_index():
     index_path = os.path.join(BLOG_DIR, "index.html")
-
     if os.path.exists(index_path):
         return FileResponse(index_path, media_type="text/html; charset=utf-8")
-
-    return HTMLResponse("""
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>ブログ一覧</title>
-</head>
-<body>
-<h1>ブログ一覧</h1>
-<p>まだ記事一覧が生成されていません。</p>
-</body>
-</html>
-""")
+    return HTMLResponse("<h1>ブログ一覧</h1><p>まだ記事一覧が生成されていません。</p>")
 
 
 @app.get("/sitemap.xml")
@@ -188,20 +152,11 @@ def sitemap():
     if os.path.exists(SITEMAP_PATH):
         with open(SITEMAP_PATH, "r", encoding="utf-8") as f:
             xml = f.read().strip()
+        return Response(content=xml, media_type="application/xml; charset=utf-8")
 
-        if xml.startswith("<?xml") or xml.startswith("<urlset"):
-            return Response(
-                content=xml,
-                media_type="application/xml; charset=utf-8"
-            )
-
-    fallback_xml = """<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-</urlset>
-"""
     return Response(
-        content=fallback_xml,
-        media_type="application/xml; charset=utf-8"
+        content='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>',
+        media_type="application/xml; charset=utf-8",
     )
 
 
