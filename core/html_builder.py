@@ -1,8 +1,10 @@
 from datetime import datetime
+from core.cta_builder import build_cta
 
 
 def build_html(seo: dict, body: str, score: int = 0) -> str:
     now = datetime.now().strftime("%Y-%m-%d")
+    cta = build_cta()
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -23,16 +25,7 @@ def build_html(seo: dict, body: str, score: int = 0) -> str:
 
 {body}
 
-<hr>
-
-<section>
-<h2>MCAddon Translatorを使う</h2>
-<p>
-Minecraft統合版アドオンの翻訳を効率化したい場合は、
-MCAddon Translatorを使うことでlangファイルやJSON翻訳を自動化できます。
-</p>
-<p><a href="/">👉 翻訳ツールはこちら</a></p>
-</section>
+{cta}
 
 </article>
 

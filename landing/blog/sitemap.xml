@@ -25,6 +25,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-hon-yaku-erra.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-hon-yaku-support.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -73,6 +79,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-honyaku-sapo-to.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-honyaku-soshinsha.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-honyaku-tetsudatte.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -86,6 +104,18 @@
   </url>
   <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-json-edit-houhou.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-json-edit-method.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-json-file-sakusei.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -145,6 +175,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-nihongo-ka-houhou-matome.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-nihongo-ka-houhou.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -181,6 +217,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-translation-simple.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-変換-方法.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -205,7 +247,19 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-翻訳-チュートリアル.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-翻訳-初心者.html</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mcaddon-translator-production.up.railway.app/blog/mcaddon-翻訳-手伝って.html</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
