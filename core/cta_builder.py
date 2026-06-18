@@ -9,9 +9,9 @@ MCAddon Translatorを使うことで手作業を減らせます。
 </p>
 
 <ul>
-<li><a href="/click?source=blog_cta&target=/">無料版を使う</a></li>
-<li><a href="/click?source=blog_cta&target=/pricing">Pro版の詳細を見る</a></li>
-<li><a href="/click?source=blog_cta&target=https://github.com/nakadzho777-dot/mcaddon-translator">GitHubを見る</a></li>
+<li><a href="/click?source=blog_cta_free&target=/">無料版を使う</a></li>
+<li><a href="/click?source=blog_cta_pricing&target=/pricing">Pro版の詳細を見る</a></li>
+<li><a href="/click?source=blog_cta_github&target=https://github.com/nakadzho777-dot/mcaddon-translator">GitHubを見る</a></li>
 </ul>
 
 <p><strong>まずは無料版で翻訳テストしてみてください。</strong></p>
