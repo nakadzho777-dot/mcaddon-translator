@@ -1,42 +1,4 @@
-import os
-import re
-from datetime import datetime
-
-BLOG_DIR = "landing/blog"
-
-
-def extract_title(html: str, fallback: str) -> str:
-    match = re.search(r"<title>(.*?)</title>", html, re.S)
-    if match:
-        return match.group(1).strip()
-    return fallback.replace(".html", "")
-
-
-def generate_blog_index():
-    os.makedirs(BLOG_DIR, exist_ok=True)
-
-    files = [
-        f for f in os.listdir(BLOG_DIR)
-        if f.endswith(".html") and f != "index.html"
-    ]
-
-    items = ""
-
-    for f in sorted(files):
-        path = os.path.join(BLOG_DIR, f)
-
-        try:
-            with open(path, "r", encoding="utf-8") as file:
-                html = file.read()
-            title = extract_title(html, f)
-        except Exception:
-            title = f.replace(".html", "")
-
-        items += f'<li><a href="/blog/{f}">{title}</a></li>\n'
-
-    now = datetime.now().strftime("%Y-%m-%d")
-
-    index_html = f"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -48,19 +10,72 @@ def generate_blog_index():
 <body>
 
 <h1>ブログ一覧</h1>
-<p>更新日: {now}</p>
+<p>更新日: 2026-06-18</p>
 
 <ul>
-{items}
+<li><a href="/blog/.html"></a></li>
+<li><a href="/blog/google281c3da749cf0393.html">google281c3da749cf0393</a></li>
+<li><a href="/blog/how-to-translate-mcadon.html">How to Translate MCADON: A Comprehensive Guide</a></li>
+<li><a href="/blog/mcaddon-honyaku-erra-kai-kyaku.html">mcaddon翻訳エラーの解決法を徹底解説</a></li>
+<li><a href="/blog/mcaddon-honyaku-erro-kai-zyutsu.html">MCAddon翻訳エラーの解決法を徹底解説</a></li>
+<li><a href="/blog/mcaddon-honyaku-error-kaiketsu.html">mcaddon翻訳エラーの解決法ガイド</a></li>
+<li><a href="/blog/mcaddon-honyaku-yarikat.html">MCAddonの翻訳方法と手順</a></li>
+<li><a href="/blog/mcaddon-lang-file-edit.html">mcaddon langファイルの編集方法とポイント</a></li>
+<li><a href="/blog/mcaddon-lang-ファイル-編集.html">mcaddon langファイルの編集方法とポイント</a></li>
+<li><a href="/blog/mcaddon-nihongo-ka-houhou.html">mcaddonの日本語化方法を徹底解説</a></li>
+<li><a href="/blog/mcaddon-nihongo-ka.html">mcaddonの日本語化方法 - 簡単ガイド</a></li>
+<li><a href="/blog/mcaddon-translate-guide.html">mcaddon-translate-guide</a></li>
+<li><a href="/blog/mcaddon-translation-error-solution.html">MCAddonの翻訳エラーを解決する方法</a></li>
+<li><a href="/blog/mcaddon-変換-方法.html">mcaddon-変換-方法</a></li>
+<li><a href="/blog/mcaddon-翻訳-やり方.html">mcaddonの翻訳方法と手順を詳しく解説</a></li>
+<li><a href="/blog/mcaddon-翻訳-エラー-解決.html">mcaddonの翻訳エラーを簡単に解決する方法</a></li>
+<li><a href="/blog/mcaddon-翻訳-方法.html">mcaddon-翻訳-方法</a></li>
+<li><a href="/blog/mcaddon-解凍-方法.html">mcaddon-解凍-方法</a></li>
+<li><a href="/blog/mcaddon_lang_ファイル_編集.html">mcaddon lang ファイル 編集</a></li>
+<li><a href="/blog/mcaddon_日本語化_方法.html">mcaddon 日本語化 方法</a></li>
+<li><a href="/blog/mcaddon_翻訳_やり方.html">mcaddon 翻訳 やり方</a></li>
+<li><a href="/blog/mcaddon_翻訳_エラー_解決.html">mcaddon 翻訳 エラー 解決</a></li>
+<li><a href="/blog/mcpack-honyaku-dekinai-genin.html">mcpackが翻訳できない原因とは？</a></li>
+<li><a href="/blog/mcpack-nihongo-ka-teduke.html">mcpackの日本語化手順を詳しく解説</a></li>
+<li><a href="/blog/mcpack-nihongo-ka-tedun.html">mcpackの日本語化手順を徹底解説</a></li>
+<li><a href="/blog/mcpack-nihongo-ka-tejun.html">MCpackの日本語化手順ガイド</a></li>
+<li><a href="/blog/mcpack-nihongo-ka-tetsuzuki.html">mcpackの日本語化手順を徹底解説</a></li>
+<li><a href="/blog/mcpack-日本語化-手順.html">mcpackの日本語化手順ガイド</a></li>
+<li><a href="/blog/mcpack-翻訳-方法.html">mcpack-翻訳-方法</a></li>
+<li><a href="/blog/mcpack-翻訳できない-原因.html">mcpackが翻訳できない原因とは？</a></li>
+<li><a href="/blog/mcpack_日本語化_手順.html">mcpack 日本語化 手順</a></li>
+<li><a href="/blog/mcpack_翻訳できない_原因.html">mcpack 翻訳できない 原因</a></li>
+<li><a href="/blog/minecraft-addon-honyaku-tool.html">Minecraftアドオン翻訳ツールで簡単に翻訳</a></li>
+<li><a href="/blog/minecraft-addon-japanese-translation.html">Minecraft Addonを日本語にする方法</a></li>
+<li><a href="/blog/minecraft-addon-nihongo-nanai.html">Minecraft Addonが日本語にならない問題の解決方法</a></li>
+<li><a href="/blog/minecraft-addon-nihongo-naranai.html">Minecraftアドオンが日本語にならない理由と解決法</a></li>
+<li><a href="/blog/minecraft-addon-nihongo.html">Minecraftアドオンを日本語化する方法</a></li>
+<li><a href="/blog/minecraft-addon-translate-方法.html">minecraft-addon-translate-方法</a></li>
+<li><a href="/blog/minecraft-addon-translation-tool.html">Minecraftアドオン翻訳ツールのご紹介</a></li>
+<li><a href="/blog/minecraft-addon-translation.html">minecraft-addon-translation</a></li>
+<li><a href="/blog/minecraft-addon-エラー-修正.html">minecraft-addon-エラー-修正</a></li>
+<li><a href="/blog/minecraft-addon-テクスチャ編集.html">minecraft-addon-テクスチャ編集</a></li>
+<li><a href="/blog/minecraft-addon-作り方.html">minecraft-addon-作り方</a></li>
+<li><a href="/blog/minecraft-addon-日本語化.html">minecraft-addon-日本語化</a></li>
+<li><a href="/blog/minecraft-addon-自動化.html">minecraft-addon-自動化</a></li>
+<li><a href="/blog/minecraft-addon-配布-方法.html">minecraft-addon-配布-方法</a></li>
+<li><a href="/blog/minecraft-json-honyaku-yarika.html">MinecraftのJSON翻訳方法と手順解説</a></li>
+<li><a href="/blog/minecraft-json-honyaku-yarikata.html">MinecraftでJSON翻訳を行う方法を解説</a></li>
+<li><a href="/blog/minecraft-json-translation-method.html">MinecraftのJSON翻訳方法</a></li>
+<li><a href="/blog/minecraft-json-翻訳-方法.html">minecraft-json-翻訳-方法</a></li>
+<li><a href="/blog/minecraft-mod-翻訳.html">minecraft-mod-翻訳</a></li>
+<li><a href="/blog/minecraft-mod-翻訳ツール.html">minecraft-mod-翻訳ツール</a></li>
+<li><a href="/blog/minecraft-アドオン-翻訳-ツール.html">Minecraftアドオン翻訳ツールの使い方ガイド</a></li>
+<li><a href="/blog/minecraft-アドオン-翻訳.html">minecraft-アドオン-翻訳</a></li>
+<li><a href="/blog/minecraft_addon_日本語にする方法.html">minecraft addon 日本語にする方法</a></li>
+<li><a href="/blog/minecraft_addon_日本語にならない.html">minecraft addon 日本語にならない</a></li>
+<li><a href="/blog/minecraft_json_翻訳_やり方.html">minecraft json 翻訳 やり方</a></li>
+<li><a href="/blog/minecraft_アドオン_翻訳_ツール.html">minecraft アドオン 翻訳 ツール</a></li>
+<li><a href="/blog/マイクラ-アドオン-日本語化-方法.html">マイクラ-アドオン-日本語化-方法</a></li>
+
 </ul>
 
 <p><a href="/">MCAddon Translator トップへ</a></p>
 
 </body>
 </html>
-"""
-
-    with open(os.path.join(BLOG_DIR, "index.html"), "w", encoding="utf-8") as f:
-        f.write(index_html)
-
-    print("✅ blog index 生成完了")
