@@ -2,9 +2,6 @@ import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# =========================
-# project root path fix
-# =========================
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 
@@ -27,6 +24,7 @@ from core.seo_engine import (
 from core.html_builder import build_html
 from core.sitemap import update_sitemap
 from core.internal_linker import run_internal_linking
+from core.blog_index import generate_blog_index
 
 
 OUTPUT_DIR = "landing/blog"
@@ -116,9 +114,13 @@ def main():
 
     print(f"📄 生成記事数: {len(files)}")
 
+    generate_blog_index()
+
     update_sitemap(files)
 
     run_internal_linking()
+
+    generate_blog_index()
 
     log_event("COMPLETE ALL")
     print("✅ 完全プロダクションSEO生成 完了")

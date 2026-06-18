@@ -1,0 +1,66 @@
+import os
+import re
+from datetime import datetime
+
+BLOG_DIR = "landing/blog"
+
+
+def extract_title(html: str, fallback: str) -> str:
+    match = re.search(r"<title>(.*?)</title>", html, re.S)
+    if match:
+        return match.group(1).strip()
+    return fallback.replace(".html", "")
+
+
+def generate_blog_index():
+    os.makedirs(BLOG_DIR, exist_ok=True)
+
+    files = [
+        f for f in os.listdir(BLOG_DIR)
+        if f.endswith(".html") and f != "index.html"
+    ]
+
+    items = ""
+
+    for f in sorted(files):
+        path = os.path.join(BLOG_DIR, f)
+
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                html = file.read()
+            title = extract_title(html, f)
+        except Exception:
+            title = f.replace(".html", "")
+
+        items += f'<li><a href="/blog/{f}">{title}</a></li>\n'
+
+    now = datetime.now().strftime("%Y-%m-%d")
+
+    index_html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ブログ一覧 | MCAddon Translator</title>
+<meta name="description" content="Minecraft統合版アドオン翻訳・日本語化に関する記事一覧です。">
+<meta name="robots" content="index,follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>ブログ一覧</h1>
+<p>更新日: {now}</p>
+
+<ul>
+{items}
+</ul>
+
+<p><a href="/">MCAddon Translator トップへ</a></p>
+
+</body>
+</html>
+"""
+
+    with open(os.path.join(BLOG_DIR, "index.html"), "w", encoding="utf-8") as f:
+        f.write(index_html)
+
+    print("✅ blog index 生成完了")
