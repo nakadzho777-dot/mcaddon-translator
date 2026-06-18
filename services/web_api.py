@@ -1,161 +1,226 @@
-
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi.responses import HTMLResponse, FileResponse, PlainTextResponse
+from pydantic import BaseModel
+from jose import jwt
+from datetime import datetime, timedelta
 import os
-import stripe
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from services.stripe_payments import router as billing_router
+from core.db import init_db, get_conn
 
 # =========================
-# core
+# APP
 # =========================
-from core.users_db import init_users, login_user
-from core.plan_manager import init_plans, set_plan
-from core.team_db import init_teams, create_team, add_member
-from core.project_db import create_project
-from core.rbac import can_edit
-from core.update_manager import init_update
-from core.log_manager import init_logs, add_log
 
-# realtime
-from core.realtime import manager
+app = FastAPI(title="MCAddon SaaS (Production Ready)")
 
-# notifications
-from core.notifications import send_slack, send_email, push_notification
-
-# UI
-from services.admin_dashboard import app as admin_app
-from services.log_dashboard import app as log_app
-from services.ui_app import app as ui_app
-
-
-app = FastAPI()
-
+init_db()
+app.include_router(billing_router)
 
 # =========================
-# 初期化
+# ENV
 # =========================
-init_users()
-init_plans()
-init_teams()
-init_update()
-init_logs()
 
+SECRET_KEY = os.getenv("SECRET_KEY", "dev_secret")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+BASE_URL = os.getenv(
+    "BASE_URL",
+    "https://mcaddon-translator-production.up.railway.app"
+)
 
 # =========================
-# WebSocket
+# AUTH (JWT)
 # =========================
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
 
-    await manager.connect(websocket)
+def create_token(data: dict):
+    payload = data.copy()
+    payload["exp"] = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
+
+def verify_token(token: str):
     try:
-        while True:
-            await websocket.receive_text()
-
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except:
+        return None
 
 
-# =========================
-# ログイン
-# =========================
-@app.post("/login")
-async def login(data: dict):
+def get_user(auth: str = Header(None)):
+    if not auth:
+        raise HTTPException(401, "Missing token")
 
-    token = login_user(data["username"], data["password"])
+    token = auth.replace("Bearer ", "")
+    data = verify_token(token)
 
-    add_log(data["username"], "LOGIN")
+    if not data:
+        raise HTTPException(401, "Invalid token")
 
-    push_notification(data["username"], "ログインしました")
-
-    send_slack(f"{data['username']} logged in")
-
-    await manager.broadcast({
-        "type": "log",
-        "action": "LOGIN",
-        "user": data["username"]
-    })
-
-    if not token:
-        return {"error": "invalid login"}
-
-    return {"token": token}
-
+    return data["user"]
 
 # =========================
-# プロジェクト作成
+# MODELS
 # =========================
-@app.post("/project/create")
-async def api_create_project(data: dict):
 
-    if not can_edit(data["team_id"], data["username"]):
+class Auth(BaseModel):
+    username: str
+    password: str
 
-        add_log(data["username"], "PROJECT_DENIED")
+class Project(BaseModel):
+    name: str
+    description: str = ""
 
-        push_notification(data["username"], "権限がありません")
+# =========================
+# UI
+# =========================
 
-        return {"error": "permission denied"}
+@app.get("/", response_class=HTMLResponse)
+def home():
+    return """
+    <html>
+    <body style="font-family:Arial;background:#0f172a;color:white;padding:40px;">
+        <h1>MCAddon SaaS</h1>
+        <p>Production Running ✔</p>
 
-    project_id = create_project(
-        data["username"],
-        data["team_id"],
-        data["name"]
+        <a href="/landing" style="color:#60a5fa;">Landing</a><br>
+        <a href="/blog/minecraft-addon-translation.html" style="color:#60a5fa;">SEO Blog</a><br>
+        <a href="/sitemap.xml" style="color:#60a5fa;">Sitemap</a><br>
+        <a href="/google281c3da749cf0393.html" style="color:#60a5fa;">Google Verify</a><br>
+        <a href="/docs" style="color:#60a5fa;">API Docs</a>
+    </body>
+    </html>
+    """
+
+# =========================
+# LANDING
+# =========================
+
+@app.get("/landing")
+def landing():
+    return FileResponse("landing/index.html")
+
+# =========================
+# BLOG（SEO）
+# =========================
+
+@app.get("/blog/{filename}")
+def blog(filename: str):
+    path = f"landing/blog/{filename}"
+    if not os.path.exists(path):
+        raise HTTPException(404, "Not found")
+    return FileResponse(path)
+
+# =========================
+# SITEMAP
+# =========================
+
+@app.get("/sitemap.xml")
+def sitemap():
+    path = "landing/blog/sitemap.xml"
+    if not os.path.exists(path):
+        raise HTTPException(404, "sitemap not found")
+
+    return FileResponse(path, media_type="application/xml")
+
+# =========================
+# GOOGLE VERIFICATION
+# =========================
+
+@app.get("/google281c3da749cf0393.html")
+def google_verify():
+    return PlainTextResponse(
+        "google-site-verification: google281c3da749cf0393.html"
     )
 
-    add_log(data["username"], "PROJECT_CREATE")
-
-    push_notification(data["username"], "プロジェクト作成完了")
-
-    send_slack(f"Project created by {data['username']}")
-
-    await manager.broadcast({
-        "type": "project",
-        "action": "CREATE",
-        "project_id": project_id
-    })
-
-    return {"project_id": project_id}
-
-
 # =========================
-# チーム作成
+# AUTH API
 # =========================
-@app.post("/team/create")
-async def api_create_team(data: dict):
 
-    team_id = create_team(data["username"], data["name"])
+@app.post("/register")
+def register(req: Auth):
 
-    add_log(data["username"], "TEAM_CREATE")
+    conn = get_conn()
+    cur = conn.cursor()
 
-    push_notification(data["username"], "チーム作成完了")
+    try:
+        cur.execute(
+            "INSERT INTO users VALUES (?, ?, ?)",
+            (req.username, req.password, "free")
+        )
+        conn.commit()
+    except:
+        raise HTTPException(400, "User exists")
 
-    send_slack(f"Team created: {team_id}")
-
-    await manager.broadcast({
-        "type": "team",
-        "action": "CREATE",
-        "team_id": team_id
-    })
-
-    return {"team_id": team_id}
+    conn.close()
+    return {"status": "registered"}
 
 
-# =========================
-# アップデート
-# =========================
-@app.post("/update/check")
-def check_update(data: dict):
+@app.post("/login")
+def login(req: Auth):
 
-    latest = {"version": "1.0.0"}
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT password FROM users WHERE username=?",
+        (req.username,)
+    )
+
+    row = cur.fetchone()
+    conn.close()
+
+    if not row or row[0] != req.password:
+        raise HTTPException(401, "Invalid login")
+
+    token = create_token({"user": req.username})
 
     return {
-        "latest": latest["version"],
-        "update": False
+        "access_token": token
     }
 
+# =========================
+# PROJECT
+# =========================
+
+@app.post("/project/create")
+def create_project(req: Project, user: str = Depends(get_user)):
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT INTO projects VALUES (NULL, ?, ?, ?, ?)",
+        (user, req.name, req.description, datetime.utcnow().isoformat())
+    )
+
+    conn.commit()
+    conn.close()
+
+    return {"status": "created"}
 
 # =========================
-# DASHBOARD
+# ADMIN
 # =========================
-app.mount("/admin", admin_app)
-app.mount("/logs", log_app)
-app.mount("/", ui_app)
+
+@app.get("/admin/stats")
+def stats():
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("SELECT COUNT(*) FROM users")
+    users = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM projects")
+    projects = cur.fetchone()[0]
+
+    conn.close()
+
+    return {
+        "users": users,
+        "projects": projects
+    }
