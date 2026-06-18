@@ -1,15 +1,39 @@
 import os
+import json
+from datetime import datetime
+
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse, HTMLResponse, Response, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-
-from core.click_tracker import record_click
 
 app = FastAPI(title="MCAddon Translator")
 
 LANDING_DIR = "landing"
 BLOG_DIR = "landing/blog"
 SITEMAP_PATH = "landing/sitemap.xml"
+CLICK_LOG = "data/clicks.json"
+
+
+def record_click(source: str, target: str):
+    os.makedirs("data", exist_ok=True)
+
+    if os.path.exists(CLICK_LOG):
+        try:
+            with open(CLICK_LOG, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            data = []
+    else:
+        data = []
+
+    data.append({
+        "time": datetime.now().isoformat(),
+        "source": source,
+        "target": target,
+    })
+
+    with open(CLICK_LOG, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
 @app.get("/")
@@ -121,8 +145,7 @@ def sitemap():
 </urlset>
 """
     return Response(
-        content=fallback_xml,
-        media_type="application/xml; charset=utf-8"
+        content=fallback_xml, media_type="application/xml; charset=utf-8"
     )
 
 
