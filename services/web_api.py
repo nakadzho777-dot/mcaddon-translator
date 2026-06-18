@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+from collections import Counter
 
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse, HTMLResponse, Response, PlainTextResponse, RedirectResponse
@@ -19,13 +20,10 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 def record_click(source: str, target: str):
     os.makedirs("data", exist_ok=True)
 
-    if os.path.exists(CLICK_LOG):
-        try:
-            with open(CLICK_LOG, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except Exception:
-            data = []
-    else:
+    try:
+        with open(CLICK_LOG, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
         data = []
 
     data.append({
@@ -39,9 +37,6 @@ def record_click(source: str, target: str):
 
 
 def load_clicks():
-    if not os.path.exists(CLICK_LOG):
-        return []
-
     try:
         with open(CLICK_LOG, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -49,23 +44,36 @@ def load_clicks():
         return []
 
 
-@app.get("/")
-def home():
-    index_path = os.path.join(LANDING_DIR, "index.html")
-
-    if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html; charset=utf-8")
-
+def admin_login_page():
     return HTMLResponse("""
 <!DOCTYPE html>
 <html lang="ja">
-<head><meta charset="UTF-8"><title>MCAddon Translator</title></head>
+<head><meta charset="UTF-8"><title>Admin Login</title></head>
 <body>
+<h1>管理ページ</h1>
+<form method="get">
+<input type="password" name="password" placeholder="password">
+<button type="submit">ログイン</button>
+</form>
+</body>
+</html>
+""", status_code=401)
+
+
+def check_admin(password: str):
+    return password == ADMIN_PASSWORD
+
+
+@app.get("/")
+def home():
+    path = os.path.join(LANDING_DIR, "index.html")
+    if os.path.exists(path):
+        return FileResponse(path, media_type="text/html; charset=utf-8")
+
+    return HTMLResponse("""
 <h1>MCAddon Translator</h1>
 <p><a href="/blog/">ブログを見る</a></p>
 <p><a href="/pricing">料金プランを見る</a></p>
-</body>
-</html>
 """)
 
 
@@ -82,25 +90,12 @@ def click(source: str = Query(default="unknown"), target: str = Query(default="/
 
 @app.get("/admin/clicks")
 def admin_clicks(password: str = Query(default="")):
-    if password != ADMIN_PASSWORD:
-        return HTMLResponse("""
-<!DOCTYPE html>
-<html lang="ja">
-<head><meta charset="UTF-8"><title>Admin Login</title></head>
-<body>
-<h1>管理ページ</h1>
-<p>パスワードを入力してください。</p>
-<form method="get" action="/admin/clicks">
-<input type="password" name="password" placeholder="password">
-<button type="submit">ログイン</button>
-</form>
-</body>
-</html>
-""", status_code=401)
+    if not check_admin(password):
+        return admin_login_page()
 
     clicks = load_clicks()
-    rows = ""
 
+    rows = ""
     for item in reversed(clicks[-200:]):
         rows += f"""
 <tr>
@@ -116,11 +111,79 @@ def admin_clicks(password: str = Query(default="")):
 <head><meta charset="UTF-8"><title>クリックログ</title></head>
 <body>
 <h1>クリックログ</h1>
+<p><a href="/admin/dashboard?password={password}">管理ダッシュボードへ</a></p>
 <p>合計クリック数: {len(clicks)}</p>
 <table border="1" cellpadding="6">
 <tr><th>Time</th><th>Source</th><th>Target</th></tr>
 {rows}
 </table>
+</body>
+</html>
+""")
+
+
+@app.get("/admin/dashboard")
+def admin_dashboard(password: str = Query(default="")):
+    if not check_admin(password):
+        return admin_login_page()
+
+    clicks = load_clicks()
+
+    source_counts = Counter([c.get("source", "unknown") for c in clicks])
+    target_counts = Counter([c.get("target", "unknown") for c in clicks])
+
+    source_rows = ""
+    for source, count in source_counts.most_common():
+        source_rows += f"<tr><td>{source}</td><td>{count}</td></tr>"
+
+    target_rows = ""
+    for target, count in target_counts.most_common():
+        target_rows += f"<tr><td>{target}</td><td>{count}</td></tr>"
+
+    recent_rows = ""
+    for item in reversed(clicks[-20:]):
+        recent_rows += f"""
+<tr>
+<td>{item.get("time", "")}</td>
+<td>{item.get("source", "")}</td>
+<td>{item.get("target", "")}</td>
+</tr>
+"""
+
+    return HTMLResponse(f"""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>管理ダッシュボード</title>
+</head>
+<body>
+
+<h1>管理ダッシュボード</h1>
+
+<p>総クリック数: <strong>{len(clicks)}</strong></p>
+
+<h2>Source別クリック</h2>
+<table border="1" cellpadding="6">
+<tr><th>Source</th><th>Clicks</th></tr>
+{source_rows}
+</table>
+
+<h2>Target別クリック</h2>
+<table border="1" cellpadding="6">
+<tr><th>Target</th><th>Clicks</th></tr>
+{target_rows}
+</table>
+
+<h2>最近のクリック</h2>
+<table border="1" cellpadding="6">
+<tr><th>Time</th><th>Source</th><th>Target</th></tr>
+{recent_rows}
+</table>
+
+<p><a href="/admin/clicks?password={password}">クリックログ詳細へ</a></p>
+<p><a href="/">トップへ戻る</a></p>
+
 </body>
 </html>
 """)
@@ -141,10 +204,10 @@ def pricing_slash():
 
 @app.get("/blog/")
 def blog_index():
-    index_path = os.path.join(BLOG_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html; charset=utf-8")
-    return HTMLResponse("<h1>ブログ一覧</h1><p>まだ記事一覧が生成されていません。</p>")
+    path = os.path.join(BLOG_DIR, "index.html")
+    if os.path.exists(path):
+        return FileResponse(path, media_type="text/html; charset=utf-8")
+    return HTMLResponse("<h1>ブログ一覧</h1>")
 
 
 @app.get("/sitemap.xml")
