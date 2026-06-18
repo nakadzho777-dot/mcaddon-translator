@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>mcaddonのJSON書き方ガイド - 簡単な手順解説</title>
+<meta name="description" content="mcaddonを作成するためのJSONの書き方を詳しく解説します。初心者にも分かりやすく、手順を追って学べます。">
+<meta name="robots" content="index,follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<article>
+<h1>mcaddonのJSON書き方ガイド - 簡単な手順解説</h1>
+
+<p><small>更新日: 2026-06-18</small></p>
+<p><small>SEOスコア: 75/100</small></p>
+
+# Minecraft統合版アドオンのmcaddon json 書き方
+
+Minecraft統合版は、プレイヤーが独自のアドオンを作成し、ゲームをカスタマイズできる素晴らしいプラットフォームです。特に、mcaddonファイルは、アドオンを簡単にインストールし、配布するための便利な形式です。しかし、初めてアドオンを作成する際には、jsonファイルの書き方に戸惑うこともあるでしょう。本記事では、初心者向けにmcaddon jsonの書き方を解説します。
+
+## mcaddonファイルとは？
+
+### mcaddonファイルの基本
+
+mcaddonファイルは、Minecraftのアドオンをパッケージ化するためのファイル形式です。このファイルには、ゲーム内の新しいアイテム、ブロック、エンティティなどのデータが含まれています。mcaddonファイルは、通常、ZIP形式で圧縮されており、json形式のファイルが含まれています。
+
+### どのように使われるのか？
+
+アドオンを作成したら、そのアドオンをmcaddon形式でエクスポートすることができます。これにより、他のプレイヤーが簡単にインストールできるようになります。mcaddonファイルには、リソースパック（見た目を変える）とビヘイビアパック（動作を変える）の両方が含まれています。
+
+## mcaddon jsonの基本構造
+
+### jsonとは？
+
+json（JavaScript Object Notation）は、データを表現するためのフォーマットの一つです。Minecraftのアドオンでは、jsonファイルを使ってゲームの要素を定義します。
+
+### mcaddon jsonの基本構造
+
+mcaddonファイルには、主に次のようなjsonファイルが含まれます。
+
+- **manifest.json**: アドオンのメタデータを定義します。
+- **リソースパック**: テクスチャや音声などのリソースを管理します。
+- **ビヘイビアパック**: ゲーム内の動作や機能を定義します。
+
+## manifest.jsonの書き方
+
+manifest.jsonは、アドオンの基本情報を含む重要なファイルです。このファイルには、アドオンの名前、バージョン、UUID（ユニークな識別子）などが含まれます。
+
+### manifest.jsonの具体例
+
+以下は、manifest.jsonの基本的な構造の例です。
+
+```json
+{
+  "format_version": "2",
+  "header": {
+    "description": "My First Addon",
+    "name": "MyAddon",
+    "uuid": "12345678-1234-1234-1234-123456789abc",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 16, 0]
+  },
+  "modules": [
+    {
+      "description": "My First Addon Behavior",
+      "type": "data",
+      "uuid": "abcdefab-abcd-abcd-abcd-abcdefabcdef",
+      "version": [1, 0, 0]
+    },
+    {
+      "description": "My First Addon Resource",
+      "type": "resources",
+      "uuid": "abcdefba-abcd-abcd-abcd-abcdefabcdef",
+      "version": [1, 0, 0]
+    }
+  ]
+}
+```
+
+### 各要素の説明
+
+- **format_version**: jsonのフォーマットバージョンを指定します。
+- **header**: アドオンの基本情報を含みます。
+- **modules**: アドオンに含まれるモジュール（ビヘイビアパック、リソースパック）を定義します。
+
+## リソースパックのjsonファイル
+
+リソースパックには、テクスチャやサウンドなどのファイルが含まれています。リソースパックのjsonファイルも、manifest.jsonと同様に重要です。
+
+### リソースパックのjson例
+
+リソースパックのjsonファイルは次のようになります。
+
+```json
+{
+  "format_version": "2",
+  "header": {
+    "description": "My First Addon Resource",
+    "name": "MyAddon Resource",
+    "uuid": "abcdefba-abcd-abcd-abcd-abcdefabcdef",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "description": "My First Addon Texture",
+      "type": "data",
+      "uuid": "12345678-1234-1234-1234-123456789abc",
+      "version": [1, 0, 0]
+    }
+  ]
+}
+```
+
+## ビヘイビアパックのjsonファイル
+
+ビヘイビアパックは、ゲーム内の動作を変更するためのファイルです。アイテムやエンティティの動作を定義します。
+
+### ビヘイビアパックのjson例
+
+ビヘイビアパックのjsonファイルの例は以下の通りです。
+
+```json
+{
+  "format_version": "2",
+  "header": {
+    "description": "My First Addon Behavior",
+    "name": "MyAddon Behavior",
+    "uuid": "abcdefab-abcd-abcd-abcd-abcdefabcdef",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "description": "My First Addon Entity",
+      "type": "data",
+      "uuid": "abcdefgh-abcd-abcd-abcd-abcdefgh1234",
+      "version": [1, 0, 0]
+    }
+  ]
+}
+```
+
+## よくあるエラーと対処法
+
+アドオンの作成中に遭遇するエラーは多岐にわたりますが、以下にいくつかの一般的なエラーとその対処法を紹介します。
+
+### エラー1: UUIDの重複
+
+UUIDは一意である必要があります。同じUUIDを持つファイルが複数存在するとエラーが発生します。
+
+#### 対処法
+新しいUUIDを生成し、重複しないように設定します。UUIDジェネレーターを使用するのも良いでしょう。
+
+### エラー2: JSONフォーマットエラー
+
+jsonファイルの構文に誤りがあると、ゲームが読み込めません。
+
+#### 対処法
+jsonファイルを検証するツールを使用して、構文エラーをチェックします。特にカンマや括弧のミスに注意してください。
+
+### エラー3: バージョンの不一致
+
+リソースパックとビヘイビアパックのバージョンが異なると、正しく動作しないことがあります。
+
+#### 対処法
+両方のjsonファイルのバージョンを一致させるように設定します。
+
+## まとめ
+
+mcaddon jsonの書き方は、初めての方には少し難しく感じるかもしれませんが、基本を押さえれば誰でも簡単にアドオンを作成できます。メタデータの設定、リソースパック、ビヘイビアパックの構造を理解することで、自分だけのMinecraft体験を楽しむことができるでしょう。
+
+もし、さらに詳細な情報が必要であれば、翻訳ツールを使って英語のリソースを活用するのも良いでしょう。英語の資料は非常に豊富なので、役立つ情報が見つかるかもしれません。これからのMinecraftアドオン作成を楽しんでください！
+
+<hr>
+
+<section>
+<h2>MCAddon Translatorを使う</h2>
+<p>
+Minecraft統合版アドオンの翻訳を効率化したい場合は、
+MCAddon Translatorを使うことでlangファイルやJSON翻訳を自動化できます。
+</p>
+<p><a href="/">👉 翻訳ツールはこちら</a></p>
+</section>
+
+</article>
+
+
+<section id="related-posts">
+<h2>関連記事</h2>
+<ul>
+<li><a href="/blog/.html"></a></li>
+<li><a href="/blog/google281c3da749cf0393.html">google281c3da749cf0393</a></li>
+<li><a href="/blog/how-to-translate-mcadon.html">How to Translate MCADON: A Comprehensive Guide</a></li>
+<li><a href="/blog/index.html">ブログ一覧 | MCAddon Translator</a></li>
+<li><a href="/blog/mcaddon-hon-yaku-support.html">MCAddonの翻訳サポートガイド - 簡単に始めよう</a></li>
+</ul>
+</section>
+</body>
+</html>

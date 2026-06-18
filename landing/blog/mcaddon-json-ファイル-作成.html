@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>mcaddonファイルを簡単に作成する方法</title>
+<meta name="description" content="mcaddon json ファイルを作成する手順を詳しく解説します。初心者でもわかりやすく、すぐに実践できる内容です。">
+<meta name="robots" content="index,follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<article>
+<h1>mcaddonファイルを簡単に作成する方法</h1>
+
+<p><small>更新日: 2026-06-18</small></p>
+<p><small>SEOスコア: 75/100</small></p>
+
+# mcaddon json ファイル 作成ガイド
+
+Minecraft統合版のアドオンを作成することは、ゲームの体験をカスタマイズする素晴らしい方法です。しかし、始めたばかりの方には、何から手を付ければよいのか分からないことも多いでしょう。この記事では、「mcaddon」ファイルとその中に含まれる「json」ファイルの作成方法について、初心者向けに詳しく解説します。
+
+## mcaddonファイルとは？
+
+mcaddonファイルは、Minecraft統合版におけるアドオンのパッケージファイルです。このファイルには、リソースパックとビヘイビアーパックが含まれており、ゲーム内のオブジェクトやエレメントに変更を加えることができます。mcaddonファイルを作成することで、アドオンを簡単に配布したり、インストールしたりすることができます。
+
+## jsonファイルとは？
+
+json（JavaScript Object Notation）ファイルは、データを構造化するためのフォーマットで、Minecraftのアドオンでは特に重要な役割を果たします。アイテム、ブロック、エンティティなどの属性や挙動を定義するために使用されます。jsonファイルを正しく作成することが、アドオンの動作に大きく影響します。
+
+## mcaddon json ファイルの作成手順
+
+### ステップ1: 必要なツールの準備
+
+まず、以下のツールを準備しましょう。
+
+- **テキストエディタ**（例: Visual Studio Code, Notepad++）
+- **Minecraft**（統合版）
+- **zip圧縮ソフト**（例: WinRAR, 7-Zip）
+
+### ステップ2: フォルダの構成を作成
+
+1. 任意の場所に新しいフォルダを作成します。このフォルダがあなたのアドオンのベースになります。
+2. このフォルダの中に、以下のフォルダを作成します。
+   - `behavior_packs`
+   - `resource_packs`
+
+### ステップ3: jsonファイルの作成
+
+ここでは、アイテムを追加するためのjsonファイルを作成する手順を紹介します。
+
+#### 3.1: ビヘイビアパックのjsonファイル
+
+1. `behavior_packs`フォルダ内に新しいフォルダを作り、アドオンの名前を付けます（例: `my_addon_behavior`）。
+2. その中に、`manifest.json`というファイルを作成します。以下の内容をコピーして貼り付けます。
+
+```json
+{
+  "format_version": "2",
+  "header": {
+    "description": "My Addon Behavior Pack",
+    "name": "My Addon",
+    "uuid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 16, 0]
+  },
+  "modules": [
+    {
+      "description": "My Addon Behavior",
+      "type": "data",
+      "uuid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+      "version": [1, 0, 0]
+    }
+  ]
+}
+```
+
+3. `uuid`フィールドには、固有のUUIDを生成して挿入します。UUIDは、オンラインのUUIDジェネレーターを使って生成できます。
+
+4. 次に、アイテムの定義を行うために、`items.json`というファイルを同じフォルダに作成します。以下のように記述します。
+
+```json
+{
+  "format_version": "1.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "my_addon:my_item",
+      "category": "Misc",
+      "is_experimental": false,
+      "icon": "textures/items/my_item.png"
+    },
+    "components": {
+      "minecraft:icon": "textures/items/my_item.png"
+    }
+  }
+}
+```
+
+#### 3.2: リソースパックのjsonファイル
+
+1. `resource_packs`フォルダ内にも同様に新しいフォルダを作成し、アドオンの名前を付けます（例: `my_addon_resource`）。
+2. その中に、`manifest.json`ファイルを作成し、以下の内容を記述します。
+
+```json
+{
+  "format_version": "2",
+  "header": {
+    "description": "My Addon Resource Pack",
+    "name": "My Addon",
+    "uuid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 16, 0]
+  },
+  "modules": [
+    {
+      "description": "My Addon Resource",
+      "type": "data",
+      "uuid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+      "version": [1, 0, 0]
+    }
+  ]
+}
+```
+
+3. アイテムのアイコン画像も必要です。`textures/items`フォルダを作成し、`my_item.png`という名前の画像を置きます。
+
+### ステップ4: mcaddonファイルの作成
+
+1. 作成した`behavior_packs`フォルダと`resource_packs`フォルダを選択し、右クリックしてzip圧縮します。
+2. 作成されたzipファイルに、拡張子を`.mcaddon`に変更します（例: `my_addon.mcaddon`）。
+
+### ステップ5: Minecraftにアドオンをインストール
+
+1. Minecraftを起動し、「設定」→「ストレージ」→「リソースパック」または「ビヘイビアーパック」に移動します。
+2. 作成した`my_addon.mcaddon`ファイルを追加します。
+3. ワールドを作成または編集し、アドオンを適用します。
+
+## よくあるエラーと対処法
+
+### エラー1: UUIDの重複
+
+アドオンの`manifest.json`ファイル内のUUIDは固有でなければなりません。同じUUIDを使用している他のアドオンがないか確認してください。
+
+### エラー2: jsonフォーマットエラー
+
+jsonファイルは非常に厳密な構文が求められます。カンマや括弧の位置に注意し、JSONLintなどのツールを使ってフォーマットを検証することをおすすめします。
+
+### エラー3: アイテムが表示されない
+
+アイテムが正しく表示されない場合、アイコンのパスやファイル名が正しいか確認してください。また、ゲーム内でアドオンを適用しているかも確認しましょう。
+
+## まとめ
+
+mcaddonファイルとjsonファイルの作成は、Minecraft統合版のアドオン開発の第一歩です。本記事を参考に、自分だけのアドオンを作成して、ゲーム体験をさらに豊かにしてみてください。
+
+もし翻訳ツールを利用したい場合は、こちらのリンクからアクセスしてみてください。あなたの創造力を活かして、素晴らしいアドオンを作成してください！
+
+<hr>
+
+<section>
+<h2>MCAddon Translatorを使う</h2>
+<p>
+Minecraft統合版アドオンの翻訳を効率化したい場合は、
+MCAddon Translatorを使うことでlangファイルやJSON翻訳を自動化できます。
+</p>
+<p><a href="/">👉 翻訳ツールはこちら</a></p>
+</section>
+
+</article>
+
+
+<section id="related-posts">
+<h2>関連記事</h2>
+<ul>
+<li><a href="/blog/.html"></a></li>
+<li><a href="/blog/google281c3da749cf0393.html">google281c3da749cf0393</a></li>
+<li><a href="/blog/how-to-translate-mcadon.html">How to Translate MCADON: A Comprehensive Guide</a></li>
+<li><a href="/blog/index.html">ブログ一覧 | MCAddon Translator</a></li>
+<li><a href="/blog/mcaddon-hon-yaku-support.html">MCAddonの翻訳サポートガイド - 簡単に始めよう</a></li>
+</ul>
+</section>
+</body>
+</html>
