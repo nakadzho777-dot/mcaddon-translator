@@ -1,0 +1,39 @@
+name: Auto Blog Generator
+
+on:
+schedule:
+- cron: "0 0 * * *"  # 毎日9時（日本時間）
+workflow_dispatch:
+
+jobs:
+build:
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: コード取得
+    uses: actions/checkout@v3
+
+  - name: Pythonセットアップ
+    uses: actions/setup-python@v4
+    with:
+      python-version: "3.11"
+
+  - name: ライブラリインストール
+    run: |
+      pip install openai python-dotenv
+
+  - name: 実行
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    run: |
+      python tools/auto_blog_generator.py
+
+  - name: Git反映
+    run: |
+      git config --global user.name "bot"
+      git config --global user.email "bot@example.com"
+      git add .
+      git commit -m "auto blog update" || echo "no changes"
+      git push
+```
