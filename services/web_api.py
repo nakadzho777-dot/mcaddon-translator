@@ -36,6 +36,17 @@ def record_click(source: str, target: str):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
+def load_clicks():
+    if not os.path.exists(CLICK_LOG):
+        return []
+
+    try:
+        with open(CLICK_LOG, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
 @app.get("/")
 def home():
     index_path = os.path.join(LANDING_DIR, "index.html")
@@ -72,6 +83,50 @@ def click(
 ):
     record_click(source, target)
     return RedirectResponse(url=target)
+
+
+@app.get("/admin/clicks")
+def admin_clicks():
+    clicks = load_clicks()
+
+    rows = ""
+
+    for item in reversed(clicks[-200:]):
+        rows += f"""
+<tr>
+<td>{item.get("time", "")}</td>
+<td>{item.get("source", "")}</td>
+<td>{item.get("target", "")}</td>
+</tr>
+"""
+
+    html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>クリックログ | MCAddon Translator</title>
+</head>
+<body>
+
+<h1>クリックログ</h1>
+<p>合計クリック数: {len(clicks)}</p>
+
+<table border="1" cellpadding="6">
+<tr>
+<th>Time</th>
+<th>Source</th>
+<th>Target</th>
+</tr>
+{rows}
+</table>
+
+<p><a href="/">トップへ戻る</a></p>
+
+</body>
+</html>
+"""
+
+    return HTMLResponse(html)
 
 
 @app.get("/pricing")
@@ -145,7 +200,8 @@ def sitemap():
 </urlset>
 """
     return Response(
-        content=fallback_xml, media_type="application/xml; charset=utf-8"
+        content=fallback_xml,
+        media_type="application/xml; charset=utf-8"
     )
 
 
