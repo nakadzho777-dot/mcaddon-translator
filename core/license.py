@@ -1,34 +1,79 @@
 import json
-import urllib.request
-from datetime import datetime
+import os
+import uuid
+import requests
+
+LICENSE_CACHE = "license.json"
+
+VERIFY_URL = (
+    "https://mcaddon-translator-production.up.railway.app"
+    "/billing/verify"
+)
 
 
 class LicenseManager:
 
     def __init__(self):
-        self.url = "https://example.com/licenses.json"
+        self.pc_id = self.get_pc_id()
 
-    def verify(self, key: str):
+    def get_pc_id(self):
+        return str(uuid.getnode())
+
+    def save_cache(self, key):
+        data = {
+            "license_key": key,
+            "pc_id": self.pc_id
+        }
+
+        with open(LICENSE_CACHE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def load_cache(self):
+        if not os.path.exists(LICENSE_CACHE):
+            return None
 
         try:
-            with urllib.request.urlopen(self.url) as r:
-                data = json.loads(r.read().decode())
+            with open(LICENSE_CACHE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return None
 
-            if key not in data:
+    def verify_online(self, key):
+
+        try:
+            r = requests.get(
+                VERIFY_URL,
+                params={"key": key},
+                timeout=15
+            )
+
+            data = r.json()
+
+            if not data.get("valid"):
                 return False
 
-            lic = data[key]
-
-            if not lic["active"]:
-                return False
-
-            # 有効期限チェック
-            expire = datetime.strptime(lic["expire"], "%Y-%m-%d")
-
-            if datetime.now() > expire:
-                return False
-
+            self.save_cache(key)
             return True
 
-        except:
+        except Exception:
             return False
+
+    def verify(self, key):
+
+        # オンライン認証
+        if self.verify_online(key):
+            return True
+
+        # オフラインキャッシュ
+        cache = self.load_cache()
+
+        if not cache:
+            return False
+
+        if cache.get("license_key") != key:
+            return False
+
+        if cache.get("pc_id") != self.pc_id:
+            return False
+
+        return True

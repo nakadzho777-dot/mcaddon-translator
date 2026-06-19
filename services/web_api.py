@@ -16,46 +16,51 @@ from fastapi.responses import (
 from fastapi.staticfiles import StaticFiles
 
 from services.stripe_payments import router as billing_router
-
+from core.license_store import create_license
 
 app = FastAPI(title="MCAddon Translator")
-
 app.include_router(billing_router)
-
 
 LANDING_DIR = "landing"
 BLOG_DIR = "landing/blog"
 SITEMAP_PATH = "landing/sitemap.xml"
 CLICK_LOG = "data/clicks.json"
+LICENSE_DB = "data/licenses.json"
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 
 
-def record_click(source: str, target: str):
-    os.makedirs("data", exist_ok=True)
-
+def load_json(path, default):
     try:
-        with open(CLICK_LOG, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
     except Exception:
-        data = []
+        return default
 
+
+def save_json(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def record_click(source: str, target: str):
+    data = load_json(CLICK_LOG, [])
     data.append({
         "time": datetime.now().isoformat(),
         "source": source,
         "target": target,
     })
-
-    with open(CLICK_LOG, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    save_json(CLICK_LOG, data)
 
 
 def load_clicks():
-    try:
-        with open(CLICK_LOG, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return []
+    return load_json(CLICK_LOG, [])
+
+
+def load_licenses():
+    return load_json(LICENSE_DB, {})
 
 
 def check_admin(password: str):
@@ -84,25 +89,10 @@ def admin_login_page():
 @app.get("/")
 def home():
     path = os.path.join(LANDING_DIR, "index.html")
-
     if os.path.exists(path):
         return FileResponse(path, media_type="text/html; charset=utf-8")
 
-    return HTMLResponse("""
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>MCAddon Translator</title>
-</head>
-<body>
-<h1>MCAddon Translator</h1>
-<p>Minecraftアドオン翻訳ツール</p>
-<p><a href="/blog/">ブログを見る</a></p>
-<p><a href="/pricing">料金プランを見る</a></p>
-</body>
-</html>
-""")
+    return HTMLResponse("<h1>MCAddon Translator</h1>")
 
 
 @app.get("/health")
@@ -119,13 +109,64 @@ def click(
     return RedirectResponse(url=target)
 
 
+@app.get("/admin/dashboard")
+def admin_dashboard(password: str = Query(default="")):
+    if not check_admin(password):
+        return admin_login_page()
+
+    clicks = load_clicks()
+    licenses = load_licenses()
+
+    source_counts = Counter([c.get("source", "unknown") for c in clicks])
+    target_counts = Counter([c.get("target", "unknown") for c in clicks])
+
+    source_rows = "".join(
+        f"<tr><td>{source}</td><td>{count}</td></tr>"
+        for source, count in source_counts.most_common()
+    )
+
+    target_rows = "".join(
+        f"<tr><td>{target}</td><td>{count}</td></tr>"
+        for target, count in target_counts.most_common()
+    )
+
+    return HTMLResponse(f"""
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><title>管理ダッシュボード</title></head>
+<body>
+<h1>管理ダッシュボード</h1>
+
+<p>総クリック数: <strong>{len(clicks)}</strong></p>
+<p>発行済みライセンス数: <strong>{len(licenses)}</strong></p>
+
+<p><a href="/admin/clicks?password={password}">クリックログ詳細</a></p>
+<p><a href="/admin/clicks.csv?password={password}">クリックCSV</a></p>
+<p><a href="/admin/licenses?password={password}">ライセンス管理</a></p>
+
+<h2>Source別クリック</h2>
+<table border="1" cellpadding="6">
+<tr><th>Source</th><th>Clicks</th></tr>
+{source_rows}
+</table>
+
+<h2>Target別クリック</h2>
+<table border="1" cellpadding="6">
+<tr><th>Target</th><th>Clicks</th></tr>
+{target_rows}
+</table>
+
+</body>
+</html>
+""")
+
+
 @app.get("/admin/clicks")
 def admin_clicks(password: str = Query(default="")):
     if not check_admin(password):
         return admin_login_page()
 
     clicks = load_clicks()
-
     rows = ""
 
     for item in reversed(clicks[-200:]):
@@ -138,32 +179,13 @@ def admin_clicks(password: str = Query(default="")):
 """
 
     return HTMLResponse(f"""
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>クリックログ</title>
-</head>
-<body>
-
 <h1>クリックログ</h1>
-
-<p><a href="/admin/dashboard?password={password}">管理ダッシュボードへ</a></p>
-<p><a href="/admin/clicks.csv?password={password}">CSVダウンロード</a></p>
-
+<p><a href="/admin/dashboard?password={password}">ダッシュボードへ</a></p>
 <p>合計クリック数: {len(clicks)}</p>
-
 <table border="1" cellpadding="6">
-<tr>
-<th>Time</th>
-<th>Source</th>
-<th>Target</th>
-</tr>
+<tr><th>Time</th><th>Source</th><th>Target</th></tr>
 {rows}
 </table>
-
-</body>
-</html>
 """)
 
 
@@ -176,7 +198,6 @@ def admin_clicks_csv(password: str = Query(default="")):
 
     output = io.StringIO()
     writer = csv.writer(output)
-
     writer.writerow(["time", "source", "target"])
 
     for item in clicks:
@@ -189,96 +210,79 @@ def admin_clicks_csv(password: str = Query(default="")):
     return Response(
         content=output.getvalue(),
         media_type="text/csv; charset=utf-8",
-        headers={
-            "Content-Disposition": "attachment; filename=clicks.csv"
-        }
+        headers={"Content-Disposition": "attachment; filename=clicks.csv"}
     )
 
 
-@app.get("/admin/dashboard")
-def admin_dashboard(password: str = Query(default="")):
+@app.get("/admin/licenses")
+def admin_licenses(password: str = Query(default="")):
     if not check_admin(password):
         return admin_login_page()
 
-    clicks = load_clicks()
+    licenses = load_licenses()
+    rows = ""
 
-    source_counts = Counter([c.get("source", "unknown") for c in clicks])
-    target_counts = Counter([c.get("target", "unknown") for c in clicks])
-
-    source_rows = ""
-    for source, count in source_counts.most_common():
-        source_rows += f"""
+    for key, item in reversed(list(licenses.items())):
+        rows += f"""
 <tr>
-<td>{source}</td>
-<td>{count}</td>
-</tr>
-"""
-
-    target_rows = ""
-    for target, count in target_counts.most_common():
-        target_rows += f"""
-<tr>
-<td>{target}</td>
-<td>{count}</td>
-</tr>
-"""
-
-    recent_rows = ""
-    for item in reversed(clicks[-20:]):
-        recent_rows += f"""
-<tr>
-<td>{item.get("time", "")}</td>
+<td><code>{key}</code></td>
+<td>{item.get("email", "")}</td>
+<td>{item.get("plan", "")}</td>
+<td>{item.get("status", "")}</td>
 <td>{item.get("source", "")}</td>
-<td>{item.get("target", "")}</td>
+<td>{item.get("created_at", "")}</td>
 </tr>
 """
 
     return HTMLResponse(f"""
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>管理ダッシュボード</title>
-</head>
+<head><meta charset="UTF-8"><title>ライセンス管理</title></head>
 <body>
 
-<h1>管理ダッシュボード</h1>
+<h1>ライセンス管理</h1>
+<p>発行済みライセンス数: {len(licenses)}</p>
 
-<p>総クリック数: <strong>{len(clicks)}</strong></p>
+<p><a href="/admin/dashboard?password={password}">ダッシュボードへ</a></p>
+<p><a href="/admin/create-license?password={password}&email=test@example.com">テストライセンス発行</a></p>
 
-<p><a href="/admin/clicks?password={password}">クリックログ詳細</a></p>
-<p><a href="/admin/clicks.csv?password={password}">CSVダウンロード</a></p>
-
-<h2>Source別クリック</h2>
 <table border="1" cellpadding="6">
 <tr>
+<th>License Key</th>
+<th>Email</th>
+<th>Plan</th>
+<th>Status</th>
 <th>Source</th>
-<th>Clicks</th>
+<th>Created At</th>
 </tr>
-{source_rows}
+{rows}
 </table>
 
-<h2>Target別クリック</h2>
-<table border="1" cellpadding="6">
-<tr>
-<th>Target</th>
-<th>Clicks</th>
-</tr>
-{target_rows}
-</table>
+</body>
+</html>
+""")
 
-<h2>最近のクリック</h2>
-<table border="1" cellpadding="6">
-<tr>
-<th>Time</th>
-<th>Source</th>
-<th>Target</th>
-</tr>
-{recent_rows}
-</table>
 
-<p><a href="/">トップへ戻る</a></p>
+@app.get("/admin/create-license")
+def admin_create_license(
+    password: str = Query(default=""),
+    email: str = Query(default="test@example.com")
+):
+    if not check_admin(password):
+        return admin_login_page()
 
+    key = create_license(email=email, source="manual_admin")
+
+    return HTMLResponse(f"""
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><title>ライセンス発行</title></head>
+<body>
+<h1>テストライセンス発行完了</h1>
+<p>Email: {email}</p>
+<p>License Key:</p>
+<pre style="font-size:20px; border:1px solid #ccc; padding:12px;">{key}</pre>
+<p><a href="/admin/licenses?password={password}">ライセンス管理へ戻る</a></p>
 </body>
 </html>
 """)
@@ -286,56 +290,23 @@ def admin_dashboard(password: str = Query(default="")):
 
 @app.get("/pricing")
 def pricing():
-    return pricing_page()
+    path = os.path.join(LANDING_DIR, "pricing.html")
+    if os.path.exists(path):
+        return FileResponse(path, media_type="text/html; charset=utf-8")
+    return HTMLResponse("<h1>料金ページはまだ生成されていません。</h1>")
 
 
 @app.get("/pricing/")
 def pricing_slash():
-    return pricing_page()
-
-
-def pricing_page():
-    path = os.path.join(LANDING_DIR, "pricing.html")
-
-    if os.path.exists(path):
-        return FileResponse(path, media_type="text/html; charset=utf-8")
-
-    return HTMLResponse("""
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>料金プラン | MCAddon Translator</title>
-</head>
-<body>
-<h1>MCAddon Translator 料金プラン</h1>
-<p>料金ページはまだ生成されていません。</p>
-<p><a href="/">トップへ戻る</a></p>
-</body>
-</html>
-""")
+    return pricing()
 
 
 @app.get("/blog/")
 def blog_index():
     path = os.path.join(BLOG_DIR, "index.html")
-
     if os.path.exists(path):
         return FileResponse(path, media_type="text/html; charset=utf-8")
-
-    return HTMLResponse("""
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>ブログ一覧</title>
-</head>
-<body>
-<h1>ブログ一覧</h1>
-<p>まだ記事一覧が生成されていません。</p>
-</body>
-</html>
-""")
+    return HTMLResponse("<h1>ブログ一覧</h1>")
 
 
 @app.get("/sitemap.xml")
@@ -344,19 +315,10 @@ def sitemap():
         with open(SITEMAP_PATH, "r", encoding="utf-8") as f:
             xml = f.read().strip()
 
-        if xml.startswith("<?xml") or xml.startswith("<urlset"):
-            return Response(
-                content=xml,
-                media_type="application/xml; charset=utf-8"
-            )
-
-    fallback_xml = """<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-</urlset>
-"""
+        return Response(content=xml, media_type="application/xml; charset=utf-8")
 
     return Response(
-        content=fallback_xml,
+        content='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>',
         media_type="application/xml; charset=utf-8",
     )
 
