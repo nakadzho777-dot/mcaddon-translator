@@ -1,0 +1,21 @@
+MCAddon Translator 翻訳レポート
+========================================
+作成日時: 2026-06-21 13:52:33
+入力: C:/Users/nakad/Downloads/RPG Skills  Prestige Evolved[6.2.0].mcaddon
+出力: C:\Users\nakad\Downloads\RPG Skills  Prestige Evolved[6.2.0]_ja.mcaddon
+
+処理時間: -
+
+[翻訳統計]
+総処理数: 540
+AI翻訳: 162
+キャッシュ: 195
+辞書ヒット: 12
+クラウド辞書: 170
+再翻訳: 0
+エラー: 1
+
+成功率: 99.8%
+
+※ このレポートは翻訳ログに基づく自動生成です。
+※ 翻訳漏れ検出・品質チェック・JSON修復と併用してください。

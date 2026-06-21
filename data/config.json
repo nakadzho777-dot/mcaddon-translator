@@ -1,5 +1,12 @@
 {
-  "model": "gpt",
-  "language": "ja",
-  "auto_update": true
+  "engine": "argos",
+  "model": "gpt-4o-mini",
+  "openrouter_model": "openai/gpt-4o-mini",
+  "ollama_model": "gemma3",
+  "speed": "fast",
+  "save_logs": true,
+  "auto_preview": false,
+  "theme": "glass_launcher",
+  "cloud_dictionary_url": "https://tranquil-magic-production-2405.up.railway.app",
+  "cloud_dictionary_api_key": ""
 }
